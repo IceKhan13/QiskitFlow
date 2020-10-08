@@ -93,12 +93,6 @@ export default class RunWidget extends React.Component {
                 <Card size="small" title="Parameters" style={{ marginTop: 10 }}>
                     <p><b>Alpha</b>: 0.9</p>
                     <p><b>Backend</b>: Almaden</p>
-                    <p><b>Alpha</b>: 0.9</p>
-                    <p><b>Backend</b>: Almaden</p>
-                    <p><b>Alpha</b>: 0.9</p>
-                    <p><b>Backend</b>: Almaden</p>
-                    <p><b>Alpha</b>: 0.9</p>
-                    <p><b>Backend</b>: Almaden</p>
                 </Card>
 
                 <Table columns={columns} dataSource={data} style={{ marginTop: 10 }}/>
