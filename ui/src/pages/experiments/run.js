@@ -24,19 +24,14 @@ const columns = [
   const data = [
     {
       key: '1',
-      metric: 'John Brown',
+      metric: 'duration',
       value: 32
     },
     {
       key: '2',
-      metric: 'Jim Green',
+      metric: 'transpiling',
       value: 42
-    },
-    {
-      key: '3',
-      metric: 'Joe Black',
-      value: 32
-    },
+    }
   ];
 
   const options = {
@@ -77,7 +72,8 @@ const columns = [
     },
     series: [{
         name: 'Measurement probability',
-        data: [76, 2, 20, 2]
+        data: [76, 2, 20, 2],
+        color: "#6929C2"
     }]
 }
 
@@ -104,8 +100,6 @@ export default class RunWidget extends React.Component {
                     <p><b>Alpha</b>: 0.9</p>
                     <p><b>Backend</b>: Almaden</p>
                 </Card>
-
-                <Table columns={columns} dataSource={data} style={{ marginTop: 10 }}/>
 
                 <Table columns={columns} dataSource={data} style={{ marginTop: 10 }}/>
                 
