@@ -1,6 +1,6 @@
 import React from 'react';
-import { Table, Badge, Menu, Dropdown, Space } from 'antd';
-import { Row, Col, Divider } from 'antd';
+import axios from 'axios';
+import { Table, Badge, Menu, Dropdown, Space, notification, Row, Col, Divider } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 
 import RunWidget from './run';
@@ -12,9 +12,62 @@ const menu = (
   </Menu>
 );
 
-function NestedTable() {
-  const expandedRowRender = () => {
-    const columns = [
+
+
+const experimentsColumns = [
+  { title: 'Experiment', dataIndex: 'experiment', key: 'experiment' },
+  {
+    title: 'Run status', dataIndex: 'runs', key: 'runs', render: (runs) => {
+      let renderedRuns = runs.map((run, i) => <span key={i}><Badge status="success" /></span>)
+      return (<span>{renderedRuns}</span>)
+    }
+  },
+  { title: 'Author', dataIndex: 'author', key: 'author' },
+  { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
+  { title: 'Action', key: 'operation', render: () => <a>Share</a> },
+];
+
+export default class ExperimentsPage extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      run: false,
+      loading: false,
+      experiments: [],
+      run: false
+    }
+  }
+
+  componentDidMount() {
+    this.getExperiments()
+  }
+
+  getExperiments(query = "") {
+    axios.get(`http://localhost:8000/experiments/`, {
+      params: {
+        query: query
+      }
+    }).then((response) => {
+      this.setState({
+        ...this.state, experiments: response.data
+      })
+    }).catch((err) => {
+      notification.open({ message: 'Error', description: err.message, style: { backgroundColor: 'red' } });
+    });
+  }
+
+  expandedRowRender(experiment) {
+    let runs = experiment.runs.map((run, i) => {
+      return {
+        key: i,
+        date: run.created_at,
+        name: run.uuid,
+        operation: run
+      }
+    })
+
+    const runColumns = [
       { title: 'Date', dataIndex: 'date', key: 'date' },
       { title: 'Name', dataIndex: 'name', key: 'name' },
       {
@@ -32,91 +85,54 @@ function NestedTable() {
         title: 'Action',
         dataIndex: 'operation',
         key: 'operation',
-        render: () => (
+        render: (run) => (
           <Space size="middle">
+            <a onClick={() => {
+              this.setState({...this.state, run: run})
+            }}>View</a>
             <a>Rerun</a>
-            <a>Share</a>
-            <Dropdown overlay={menu}>
-              <a>
-                More <DownOutlined />
-              </a>
-            </Dropdown>
           </Space>
         ),
       },
     ];
-
-    const data = [];
-    for (let i = 0; i < 3; ++i) {
-      data.push({
-        key: i,
-        date: '2014-12-24 23:12:00',
-        name: `Quantum experiment run #${i + 1}`,
-        upgradeNum: 'Upgraded: 56',
-      });
-    }
-    return <Table columns={columns} dataSource={data} pagination={false} />;
-  };
-
-  const columns = [
-    { title: 'Experiment', dataIndex: 'experiment', key: 'experiment' },
-    { title: 'Run status', dataIndex: 'runs', key: 'runs', render: (runs) => {
-        let renderedRuns = runs.map(run => <span><Badge status="success" /></span>)
-        return(<span>{renderedRuns}</span>)
-    }},
-    { title: 'Author', dataIndex: 'author', key: 'author' },
-    { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
-    { title: 'Action', key: 'operation', render: () => <a>Share</a> },
-  ];
-
-  const data = [];
-  for (let i = 0; i < 3; ++i) {
-    data.push({
-      key: i,
-      experiment: `Quantum experiment #${i + 1}`,
-      author: 'Admin',
-      runs: [
-          { name: "run #1", status: "finished" },
-          { name: "run #2", status: "finished" },
-          { name: "run #3", status: "finished" }
-      ],
-      createdAt: '2014-12-24 23:12:00',
-    });
+  
+    return <Table 
+                columns={runColumns}
+                dataSource={runs} 
+                pagination={false} />;
   }
 
-  return (
-    <Table
-      className="components-table-demo-nested"
-      columns={columns}
-      expandable={{ expandedRowRender }}
-      dataSource={data}
-    />
-  );
-}
+  
+  render() {
+    let experiments = this.state.experiments;
+    let data = experiments.map((experiment, i) => {
+      return {
+        key: i,
+        experiment: experiment.name,
+        author: 'Admin',
+        runs: experiment.runs,
+        createdAt: experiment.created_at,
+      }
+    })
 
-export default class ExperimentsPage extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            run: false
-        }
-    }
-
-    render() {
-        return(
-            <div>
-                <Row>
-                    <Col span={12}>
-                        <div style={{ margin: "0 20px" }}>
-                            <NestedTable />
-                        </div>
-                    </Col>
-                    <Col span={12}>
-                        <RunWidget />
-                    </Col>
-                </Row>  
+    return (
+      <div>
+        <Row>
+          <Col span={this.state.run ? 12 : 24}>
+            <div style={{ margin: "0 20px" }}>
+              <Table
+                className="components-table-demo-nested"
+                columns={experimentsColumns}
+                expandable={{ expandedRowRender: this.expandedRowRender.bind(this) }}
+                dataSource={data}
+              />
             </div>
-        )
-    }
+          </Col>
+          <Col span={this.state.run ? 12 : 0}>
+            <RunWidget run={this.state.run} />
+          </Col>
+        </Row>
+      </div>
+    )
+  }
 }

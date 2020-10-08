@@ -21,69 +21,63 @@ const columns = [
     }
   ];
   
-  const data = [
-    {
-      key: '1',
-      metric: 'duration',
-      value: 32
-    },
-    {
-      key: '2',
-      metric: 'transpiling',
-      value: 42
-    }
-  ];
-
-  const options = {
-    chart: {
-        type: 'bar'
-    },
-    title: {
-        text: 'Measurement'
-    },
-    xAxis: {
-        categories: ['0000', '0001', '0010', '0011'],
-        title: {
-            text: null
-        }
-    },
-    yAxis: {
-        min: 0,
-        title: {
-            text: 'Probability',
-            align: 'high'
-        },
-        labels: {
-            overflow: 'justify'
-        }
-    },
-    tooltip: {
-        valueSuffix: '%'
-    },
-    plotOptions: {
-        bar: {
-            dataLabels: {
-                enabled: true
-            }
-        }
-    },
-    credits: {
-        enabled: false
-    },
-    series: [{
-        name: 'Measurement probability',
-        data: [76, 2, 20, 2],
-        color: "#6929C2"
-    }]
-}
-
-export default class RunWidget extends React.Component {
+class RunWrapper extends React.Component {
     render() {
+        let run = this.props.run;
+
+        let parameters = run.parameters.map((parameter, i) => {
+            return(<p key={i}><b>{parameter.name}</b>: {parameter.value}</p>)
+        })
+        
+        let metrics = run.metrics.map((metric, i) => {
+            return {
+                key: i,
+                metric: metric.name,
+                value: metric.value
+            }
+        })
+
+        let measurements = run.measurements.map((meas, i) => {
+            console.log(meas)
+
+            let cats = meas.measures.map(m => m.key)
+            let values = meas.measures.map(m => m.value)
+
+            const options = {
+                chart: { type: 'bar' },
+                title: {  text: 'Measurement' },
+                xAxis: { categories: cats, title: { text: null } },
+                yAxis: {
+                    min: 0,
+                    title: { text: 'Probability', align: 'high' },
+                    labels: {  overflow: 'justify' }
+                },
+                tooltip: { valueSuffix: '%' },
+                plotOptions: { bar: { dataLabels: { enabled: true  } }  },
+                credits: { enabled: false },
+                series: [{
+                    name: 'Measurement probability',
+                    data: values,
+                    color: "#6929C2"
+                }]
+            }
+            
+            return(
+                <Card size="small" style={{ marginTop: 10 }}>
+                    <HighchartsReact
+                        highcharts={Highcharts}
+                        options={options}
+                    />
+                </Card>
+            )
+        })
+
+
         return(
             <div style={{ margin: "0 20px", overflow: "scroll", maxHeight: "70vh" }}>
                 <Row gutter={16}>
                     <Col span={12}>
-                        <Statistic title="Name" value={"Run #1"} prefix={<SlidersOutlined />} />                        
+                        <Statistic title="Name" value={run.uuid} prefix={<SlidersOutlined />} />                        
                     </Col>
                     <Col span={12}>
                         <Statistic title="Status" value={"Success"} suffix="/ Finished" />
@@ -91,33 +85,22 @@ export default class RunWidget extends React.Component {
                 </Row>
 
                 <Card size="small" title="Parameters" style={{ marginTop: 10 }}>
-                    <p><b>Alpha</b>: 0.9</p>
-                    <p><b>Backend</b>: Almaden</p>
+                    {parameters}
                 </Card>
 
-                <Table columns={columns} dataSource={data} style={{ marginTop: 10 }}/>
+                <Table columns={columns} dataSource={metrics} style={{ marginTop: 10 }}/>
                 
-                <Card size="small" style={{ marginTop: 10 }}>
-                    <HighchartsReact
-                        highcharts={Highcharts}
-                        options={options}
-                    />
-                </Card>
-
-                <Card size="small" style={{ marginTop: 10 }}>
-                    <HighchartsReact
-                        highcharts={Highcharts}
-                        options={options}
-                    />
-                </Card>
-
-                <Card size="small" style={{ marginTop: 10 }}>
-                    <HighchartsReact
-                        highcharts={Highcharts}
-                        options={options}
-                    />
-                </Card>
+                <div>{measurements}</div>
             </div>
+        )
+    }
+}
+
+export default class RunWidget extends React.Component {
+    render() {
+        console.log(this.props)
+        return(
+            this.props.run ? <RunWrapper run={this.props.run} /> : <div></div>
         )
     }
 }
