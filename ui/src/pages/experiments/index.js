@@ -107,12 +107,12 @@ export default class ExperimentsPage extends React.Component {
         return(
             <div>
                 <Row>
-                    <Col flex={1}>
+                    <Col span={12}>
                         <div style={{ margin: "0 20px" }}>
                             <NestedTable />
                         </div>
                     </Col>
-                    <Col flex={4}>
+                    <Col span={12}>
                         <RunWidget />
                     </Col>
                 </Row>  
