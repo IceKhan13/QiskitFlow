@@ -7,6 +7,8 @@ class Experiment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    archive = models.FileField(null=True, blank=True)
+
 
 class Run(models.Model):
     uuid = models.CharField(max_length=255)
