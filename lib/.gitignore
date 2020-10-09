@@ -23,3 +23,5 @@ build/*
 dist/*
 
 *.egg-info
+
+_experiments/**

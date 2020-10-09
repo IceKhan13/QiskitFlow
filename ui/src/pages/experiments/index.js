@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Table, Badge, Menu, Dropdown, Space, notification, Row, Col, Divider } from 'antd';
+import { Table, Badge, Menu, Dropdown, Space, notification, Row, Col, Divider, Tag } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 
 import RunWidget from './run';
@@ -69,7 +69,7 @@ export default class ExperimentsPage extends React.Component {
 
     const runColumns = [
       { title: 'Date', dataIndex: 'date', key: 'date' },
-      { title: 'Name', dataIndex: 'name', key: 'name' },
+      { title: 'Run', dataIndex: 'name', key: 'name' },
       {
         title: 'Status',
         key: 'state',
@@ -80,7 +80,7 @@ export default class ExperimentsPage extends React.Component {
           </span>
         ),
       },
-      { title: 'Tags', dataIndex: 'tags', key: 'tags' },
+      { title: 'Tags', dataIndex: 'tags', key: 'tags', render: () => <Tag>Qiskit</Tag> },
       {
         title: 'Action',
         dataIndex: 'operation',

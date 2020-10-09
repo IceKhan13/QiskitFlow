@@ -1,0 +1,37 @@
+{
+    "name": "quantum experiment name example",
+    "runs": [
+        {
+            "id": "123123123",
+            "parameters": [
+                {
+                    "name": "t0",
+                    "value": 0.1
+                },
+                {
+                    "name": "t0",
+                    "value": 0.1
+                }
+            ],
+            "metrics": [
+                {
+                    "name": "f1_score",
+                    "value": 0.8
+                },
+                {
+                    "name": "f1_score",
+                    "value": 0.8
+                }
+            ],
+            "measurements": [
+                {"00": 475, "11": 525},
+                {"00": 475, "11": 525},
+                {"00": 475, "11": 525},
+                {"00": 475, "11": 525}
+            ],
+            "result": {
+                "any": "json_here"
+            }
+        }
+    ]
+}

@@ -23,7 +23,8 @@ setuptools.setup(
         'Programming Language :: Python :: 3.7',
     ],
     install_requires=[
-        'Click>=6'
+        'Click>=6',
+        'requests>=2.22.0'
     ],
     python_requires='>=3.7',
     entry_points='''

@@ -40,7 +40,7 @@ class ExperimentViewSet(viewsets.ModelViewSet):
             with tarfile.open("{}/{}".format(settings.PROJECT_PATH, file_url), "r:gz") as tar:
                 tar.extractall(uncompress_to)
 
-            with open("{}/example/experiment.json".format(uncompress_to), "r") as experiment_file:
+            with open("{}/experiment.json".format(uncompress_to), "r") as experiment_file:
                 experiment_data = json.load(experiment_file)
 
                 experiment_name = experiment_data["name"]
