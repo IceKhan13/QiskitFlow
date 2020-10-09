@@ -1,10 +1,11 @@
 import React from 'react';
 
-import { Statistic, Row, Col, Card, Table, Tag, Space } from 'antd';
+import { Statistic, Row, Col, Card, Table, Tag, Collapse } from 'antd';
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 
 import { SlidersOutlined } from '@ant-design/icons';
+const { Panel } = Collapse;
 
 
 const columns = [
@@ -49,14 +50,14 @@ class RunWrapper extends React.Component {
                 xAxis: { categories: cats, title: { text: null } },
                 yAxis: {
                     min: 0,
-                    title: { text: 'Probability', align: 'high' },
+                    title: { text: 'Counts', align: 'high' },
                     labels: {  overflow: 'justify' }
                 },
-                tooltip: { valueSuffix: '%' },
+                tooltip: { valueSuffix: '' },
                 plotOptions: { bar: { dataLabels: { enabled: true  } }  },
                 credits: { enabled: false },
                 series: [{
-                    name: 'Measurement probability',
+                    name: 'Measurements',
                     data: values,
                     color: "#6929C2"
                 }]
@@ -76,13 +77,30 @@ class RunWrapper extends React.Component {
         return(
             <div style={{ margin: "0 20px", overflow: "scroll", maxHeight: "70vh" }}>
                 <Row gutter={16}>
-                    <Col span={12}>
-                        <Statistic title="Name" value={run.uuid} prefix={<SlidersOutlined />} />                        
-                    </Col>
-                    <Col span={12}>
-                        <Statistic title="Status" value={"Success"} suffix="/ Finished" />
+                    <Col span={24}>
+                        <Statistic title="Run" value={run.uuid} prefix={<SlidersOutlined />} />                        
                     </Col>
                 </Row>
+
+                <Collapse defaultActiveKey={[]} style={{ marginTop: 10 }}>
+                    <Panel header="Docker image" key="docker_image">
+                        <b>{`docker run qiskitflow:experiment_${run.uuid}`}</b>
+                    </Panel>
+                    <Panel header="BibTeX" key="bibtex">
+                    <p>
+                        {`@software{QiskitFlow,
+                        author = {Admin},
+                        title = {Quantum experiment ${run.uuid}},
+                        url = {https://qiskitflow.com/experiments/${run.experiment}},
+                        version = {0.20.2},
+                        date = {2020-10-08}
+                        }`}
+                    </p>
+                    </Panel>
+                    <Panel header="Sourcecode" key="code">
+                    <   a>{`experiment${run.experiment}.py`}</a>
+                    </Panel>
+                </Collapse>
 
                 <Card size="small" title="Parameters" style={{ marginTop: 10 }}>
                     {parameters}
