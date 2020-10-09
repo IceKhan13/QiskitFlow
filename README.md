@@ -52,3 +52,7 @@ cd ui
 npm install
 npm start
 ```
+
+@authors Shashwat Shukla, Solomon Uriri, Mohamed Yassine Ferjani, Iskandar Sitdikov
+
+
