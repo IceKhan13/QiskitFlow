@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -141,3 +142,9 @@ CORS_ORIGIN_WHITELIST = [
 CORS_ORIGIN_REGEX_WHITELIST = [
     'http://localhost:3000',
 ]
+
+MEDIA_ROOT = 'media/'
+
+MEDIA_URL = '/media/'
+
+PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
