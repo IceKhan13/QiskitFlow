@@ -18,9 +18,13 @@ class Experiment(object):
         with open(filename, 'r+') as f:
             data = json.load(f)
         #loop
-        for i in range(len(data["runs"])):
-         if data["runs"][i]["id"]==id:
-            data["runs"][i]["metrics"].append(metric_dict)
+        for j in range(len(data)):
+         #print(len(data["runs"]))
+         for i in range(len(data[j]["runs"])):
+
+          if data[j]["runs"][i]["id"]==id:
+           if data[j]["runs"][i]["id"]==id:
+            data[j]["runs"][i]["metrics"].append(metric_dict)
             
         
 
@@ -32,10 +36,13 @@ class Experiment(object):
         filename = 'experiment.json'
         with open(filename, 'r') as f:
             data = json.load(f)
-        for i in range(len(data["runs"])):
-         if data["runs"][i]["id"]==id:
+        for j in range(len(data)):
+         #print(len(data["runs"]))
+         for i in range(len(data[j]["runs"])):
 
-            data["runs"][i]["parameters"].append(param_dict)
+          if data[j]["runs"][i]["id"]==id:
+
+            data[j]["runs"][i]["parameters"].append(param_dict)
         with open("experiment.json", "w") as f:
             json.dump(data, f)  # serializing back to the original file
 
@@ -45,10 +52,13 @@ class Experiment(object):
         filename = 'experiment.json'
         with open(filename, 'r') as f:
             data = json.load(f)
-        for i in range(len(data["runs"])):
-         if data["runs"][i]["id"]==id:
+        for j in range(len(data)):
+         #print(len(data["runs"]))
+         for i in range(len(data[j]["runs"])):
+
+          if data[j]["runs"][i]["id"]==id:
            #print(data["runs"][0]["measurements"])
-           data["runs"][i]["measurements"].append(measurement_dict)
+           data[j]["runs"][i]["measurements"].append(measurement_dict)
         with open("experiment.json", "w") as f:
            json.dump(data, f)  # serializing back to the original file  
         
@@ -96,8 +106,7 @@ class Experiment(object):
         with open('experiment.json', "r+") as f:  # reading a file
           data = json.load(f)  # deserialization
         #data.append(experiment)
-        data[-1]["runs"].append(dicto)#!!!!!!!add run to a specific experiment, here the id of the experiment must be added
-        
+        data[-1]["runs"].append(dicto)#add run to a specific experiment, here the id of the experiment must be added
         with open("experiment.json", "w") as f:
             json.dump(data, f)  # serializing back to the original file
         #with open('experiment.json', 'w') as f:
