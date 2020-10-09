@@ -18,12 +18,9 @@ class Experiment(object):
         with open(filename, 'r+') as f:
             data = json.load(f)
         #loop
-        for j in range(len(data)):
-        
-         for i in range(len(data[j]["runs"])):
-
-          if data[j]["runs"][i]["id"]==id:
-            data[j]["runs"][i]["metrics"].append(metric_dict)
+        for i in range(len(data["runs"])):
+         if data["runs"][i]["id"]==id:
+            data["runs"][i]["metrics"].append(metric_dict)
             
         
 
@@ -35,13 +32,10 @@ class Experiment(object):
         filename = 'experiment.json'
         with open(filename, 'r') as f:
             data = json.load(f)
-        for j in range(len(data)):
-        
-         for i in range(len(data[j]["runs"])):
+        for i in range(len(data["runs"])):
+         if data["runs"][i]["id"]==id:
 
-          if data[j]["runs"][i]["id"]==id:
-
-            data[j]["runs"][i]["parameters"].append(param_dict)
+            data["runs"][i]["parameters"].append(param_dict)
         with open("experiment.json", "w") as f:
             json.dump(data, f)  # serializing back to the original file
 
@@ -51,12 +45,10 @@ class Experiment(object):
         filename = 'experiment.json'
         with open(filename, 'r') as f:
             data = json.load(f)
-        for j in range(len(data)):
-        
-         for i in range(len(data[j]["runs"])):
-
-          if data[j]["runs"][i]["id"]==id:
-           data[j]["runs"][i]["measurements"].append(measurement_dict)
+        for i in range(len(data["runs"])):
+         if data["runs"][i]["id"]==id:
+           #print(data["runs"][0]["measurements"])
+           data["runs"][i]["measurements"].append(measurement_dict)
         with open("experiment.json", "w") as f:
            json.dump(data, f)  # serializing back to the original file  
         
@@ -68,7 +60,7 @@ class Experiment(object):
         with open(filename, 'r') as f:
          data=json.load(f)
         for j in range(len(data)):
-        
+         #print(len(data["runs"]))
          for i in range(len(data[j]["runs"])):
 
           if data[j]["runs"][i]["id"]==idd:
@@ -99,24 +91,22 @@ class Experiment(object):
         
         
         #filename = 'experiment.json'
-        experiment={"name": self.name,"runs":[dicto] }
+        #experiment={"name": self.name,"runs":[] }
     
         with open('experiment.json', "r+") as f:  # reading a file
           data = json.load(f)  # deserialization
         #data.append(experiment)
-       # for j in range(len(data)):
-        # if data[j]["name"]==self.name:
-        data[0]["runs"].append(dicto)#***add run to a specific experiment, here the id of the experiment must be added*****
+        data[-1]["runs"].append(dicto)#!!!!!!!add run to a specific experiment, here the id of the experiment must be added
         
         with open("experiment.json", "w") as f:
             json.dump(data, f)  # serializing back to the original file
-        with open('experiment.json', 'w') as f:
-           json.dump(experiment, f)
+        #with open('experiment.json', 'w') as f:
+         #  json.dump(experiment, f)
           
           
         
 
-    """
+      
     def create_new_experiment(self):
         dicto={
             "id":id,
@@ -125,21 +115,22 @@ class Experiment(object):
             "measurements": [],
             "result":{'any':""}
             }
-        experiment={"name": self.name,"runs":[] }
+        experiment={"name": self.name,"runs":[dicto] }
 
-        with open('experiment.json', "r") as f:  # reading a file
+        with open('experiment.json', "r+") as f:  # reading a file
           data = json.load(f)  # deserialization
         data.append(experiment)
         with open("experiment.json", "w") as f:
-            json.dump(experiment, f)  # serializing back to the original file
+            json.dump(data, f)  # serializing back to the original file
     
             
-   """
+    # def create_new_experiment(self):
+         
         
 def main():
  e=Experiment("qkd")
  id0=str(uuid.uuid1())
- #e.create_new_experiment()
+# e.create_new_experiment()
  #example of an experiment with multiple runs
  e.save_run(id0) # run nb 1
  id3=str(uuid.uuid1())
@@ -157,4 +148,3 @@ def main():
  t.write_result("#####", id2)
  #########################
 main()
-    
