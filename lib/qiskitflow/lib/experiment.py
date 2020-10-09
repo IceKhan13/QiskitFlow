@@ -47,7 +47,7 @@ class Experiment(object):
          if data["runs"][i]["id"]==id:
            #print(data["runs"][0]["measurements"])
            data["runs"][0]["measurements"].append(measurement_dict)
-           data["name"]="measurement_dict)"
+           
         
 
   
