@@ -73,8 +73,45 @@ def experiment_info(name):
     click.echo(click.style(tabulate(table, headers, tablefmt='pretty'), fg='white'))
 
 
+def run_upload(experiment_name, run_id):
+    folder = "{}/{}/{}".format(EXPERIMENTS_DIRECTORY, experiment_name, run_id)
+    sourcecode_dir = "{}/sourcecode".format(folder)
+
+    if os.path.isdir(sourcecode_dir):
+        with tarfile.open("{}/sourcecode.tar.gz".format(folder), "w:gz") as tar:
+            tar.add(sourcecode_dir)
+    
+    
+    with open("{}/run.json".format(folder), "r") as f:
+        payload = json.load(f)
+
+        # TODO: send payload and sourcecode to server
+        click.echo(payload)
+
+    click.echo(click.style("Experiment [{}] run [{}] has been shared " \
+                           "successfully!\n".format(experiment_name, run_id), fg='white'))
+
+
+
 @experiments.command("share")
-@click.argument("name")
-def experiment_share(name):
-    click.echo(click.style("Sharing experiment '{}'...\n".format(name), fg='magenta'))
-    # TODO: implement
+@click.argument("experiment_name")
+@click.argument("run_ids", nargs=-1)
+def experiment_share(experiment_name, run_ids):
+    if len(run_ids) == 0:
+        runs = []
+        for path in glob.glob("{}/{}/**/run.json".format(EXPERIMENTS_DIRECTORY, experiment_name)):
+            _, _, run_id, _ = path.split("/")
+            runs.append(run_id)
+
+        if click.confirm("Do you want to share all {} runs of " \
+                         "experiment {}?".format(len(runs), experiment_name)):
+            # TODO: think about batch upload
+            for run_id in runs:
+                run_upload(experiment_name, run_id)
+        else:
+            click.echo(click.style("Cancelling sharing...\n", fg='yellow'))
+
+    else:
+        for run_id in run_ids:
+            run_upload(experiment_name, run_id)
+
