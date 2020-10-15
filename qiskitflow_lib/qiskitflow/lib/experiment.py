@@ -92,6 +92,7 @@ class Experiment:
         self.metrics = []
         self.parameters = []
         self.measurements = []
+        self.state_vectors = [] # TODO: implement
 
     def __enter__(self):
         return self
@@ -133,6 +134,27 @@ class Experiment:
         with open("{}/run.json".format(run_dir), "w") as f:
             json.dump(self.__dict__(), f)
         return self.run_id
+
+    @classmethod
+    def _load_experiment(cls, path: str):
+        """ Load experiment run from file. """
+        with open(path, "r") as f:
+            run_data = json.load(f)
+            exp = Experiment(run_data["name"], entrypoint=run_data["entrypoint"])
+            
+            metrics = []
+            for m in run_data["metrics"]:
+                metrics.append(Metric(m["name"], m["value"]))
+
+            parameters = []
+            for p in run_data["parameters"]:
+                parameters.append(Parameter(p["name"], p["value"]))
+
+            exp.metrics = metrics
+            exp.parameters = parameters
+
+            # TODO: measurement, state vector
+            return exp
 
     def _create_and_get_save_directory(self) -> [str, str]:
         """ Creates directory for experiment run if not exists and return path. """

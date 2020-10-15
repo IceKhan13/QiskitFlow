@@ -29,7 +29,7 @@ def experiments():
 def experiments_list():
     experiment_runs_counter = {}
     for path in glob.glob("{}/**/**/run.json".format(EXPERIMENTS_DIRECTORY)):
-        _, experiment_name, run_id, _ = path.split("/")
+        _, experiment_name, _, _ = path.split("/")
         if experiment_name not in experiment_runs_counter.keys():
             experiment_runs_counter[experiment_name] = 1
         else:
@@ -77,10 +77,12 @@ def run_upload(experiment_name, run_id):
     folder = "{}/{}/{}".format(EXPERIMENTS_DIRECTORY, experiment_name, run_id)
     sourcecode_dir = "{}/sourcecode".format(folder)
 
+    current_dir = os.path.abspath(os.getcwd())
     if os.path.isdir(sourcecode_dir):
-        with tarfile.open("{}/sourcecode.tar.gz".format(folder), "w:gz") as tar:
-            tar.add(sourcecode_dir)
-    
+        os.chdir(folder)
+        with tarfile.open("sourcecode.tar.gz", "w:gz") as tar:
+            tar.add("sourcecode")
+    os.chdir(current_dir)
     
     with open("{}/run.json".format(folder), "r") as f:
         payload = json.load(f)
