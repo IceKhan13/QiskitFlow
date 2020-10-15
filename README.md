@@ -8,6 +8,9 @@ Qiskit global hackathon project.
 
 Platform for tracking, sharing and running quantum experiments in a clean and understandable for developers, researchers and students manner.
 
+> Alpha release is in the works. Alpha release refactored components of QiskitFlow will be located in `qiskitflow_lib`, `qiskitflow_server`, `qiskitflow_ui` folders. Later on folders developed during hackathon will be removed.
+
+
 * [General overview](#general-overview)
 * [Deployment](#deployment-options)
 * [Screenshots](#screenshots)
