@@ -1,15 +1,19 @@
 from qiskitflow.lib.experiment import Experiment
 
 
-experiment = Experiment("some name")
+def run():
 
-experiment.write_measurement({"00": 1024})
-experiment.write_measurement({"01": 1024})
+    with Experiment("LEL", entrypoint="test.py") as exp:
+        exp.write_metric("lel", 0.1)
+        exp.write_metric("lel2", 0.2)
+        exp.write_metric("lel3", 0.3)
+        exp.write_metric("lel4", 0.4)
+
+        exp.write_parameter("asdasd", "asdasd")
+        exp.write_parameter("asdasd123", "asdasd")
+        exp.write_parameter("asdasd1232", "asdasd")
+        exp.write_parameter("asdasd123123", "asdasd")
 
 
-experiment.write_metric("t0", 0.1)
-
-experiment.write_parameter("backend", "Tashkent")
-
-
-experiment.save_exoeriment()
+if __name__ == "__main__":
+    run()

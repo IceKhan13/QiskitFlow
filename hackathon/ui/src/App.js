@@ -27,7 +27,7 @@ const App = () => (
        <ExperimentsPage />
       </div>
     </Content>
-    <Footer style={{ textAlign: 'center' }}>QiskitFlow ©2020 No one will look at this note. Poor, lonely note =( </Footer>
+    <Footer style={{ textAlign: 'center' }}>QiskitFlow ©2020 </Footer>
   </Layout>
 );
 
