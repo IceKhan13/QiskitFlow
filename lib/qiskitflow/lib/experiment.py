@@ -4,7 +4,7 @@ import json
 import shutil
 
 from typing import Optional, Union
-from qiskitflow.core.constants import EXPERIMENTS_DIRECTORY
+from qiskitflow.utils.constants import EXPERIMENTS_DIRECTORY
 from qiskitflow.lib.models import Metric, Parameter, Measurement
 
 
@@ -12,17 +12,17 @@ class Experiment:
     def __init__(self,
                  name: str, 
                  entrypoint: Optional[str] = None, 
-                 base_path: Optional[str] = None):
+                 save_path: Optional[str] = None):
         """ Experiment.
         
         Args:
             name (str): name of experiment
             entrypoint (str): script that were used to run this experiment
-            base_path (str): path to folder with entrypoint a.k.a root directory for experiment
+            save_path (str): experiments save location
         """
-        if not base_path:
-            base_path = "./"
-        self.base_path = base_path
+        if not save_path:
+            save_path = "./"
+        self.save_path = save_path
         self.entrypoint = entrypoint
 
         self.name = name
@@ -66,8 +66,8 @@ class Experiment:
 
         # saving files
         # TODO: limit copytree to specific filetypes (.py, Docker, requirements.txt, etc)
-        if self.entrypoint and os.path.isdir(self.base_path):
-            shutil.copytree(self.base_path, sourcecode_directory,
+        if self.entrypoint and os.path.isdir(self.save_path):
+            shutil.copytree(self.save_path, sourcecode_directory,
                             ignore=shutil.ignore_patterns(EXPERIMENTS_DIRECTORY))
 
         with open("{}/run.json".format(run_dir), "w") as f:
@@ -75,7 +75,7 @@ class Experiment:
         return self.run_id
 
     @classmethod
-    def _load_experiment(cls, path: str):
+    def load(cls, path: str):
         """ Load experiment run from file. """
         with open(path, "r") as f:
             run_data = json.load(f)
@@ -103,7 +103,7 @@ class Experiment:
 
     def _create_and_get_save_directory(self) -> [str, str]:
         """ Creates directory for experiment run if not exists and return path. """
-        directory = "{}/{}/{}/{}".format(self.base_path, EXPERIMENTS_DIRECTORY, self.name, self.run_id)
+        directory = "{}/{}/{}/{}".format(self.save_path, EXPERIMENTS_DIRECTORY, self.name, self.run_id)
         sourcecode_directory = "{}/sourcecode".format(directory)
         if not os.path.exists(directory):
             os.makedirs(directory)
