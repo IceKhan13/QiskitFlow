@@ -43,12 +43,12 @@ def _get_runs(name: str, metrics: str, parameters: str):
         experiment = Experiment.load(path)
 
         if not metrics and not parameters:
-            metrics = [str(m) for m in experiment.metrics]
-            parameters = [str(p) for p in experiment.parameters]
+            ms = [str(m) for m in experiment.metrics]
+            ps = [str(p) for p in experiment.parameters]
 
             runs.append([run_id,
-                         "\n".join(parameters),
-                         "\n".join(metrics)])
+                         "\n".join(ps),
+                         "\n".join(ms)])
         else:
             run = [run_id]
 
