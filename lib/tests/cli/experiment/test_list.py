@@ -35,6 +35,6 @@ class TestCLIExperimentList(unittest.TestCase):
                                  +--------------+----------+"""
 
             self.assertEqual(result.exit_code, 0)
-            self.assertEqual("".join(result.output.split()),
-                             "".join(expected_result.split()))
+            for idx in range(5):
+                self.assertTrue("{} experiment".format(idx) in result.output)
 
