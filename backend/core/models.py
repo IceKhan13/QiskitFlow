@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -9,6 +10,13 @@ class Experiment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     archive = models.FileField(null=True, blank=True)
+
+    author = models.ForeignKey(User,
+                               on_delete=models.CASCADE,
+                               related_name='experiments')
+
+    def __str__(self):
+        return self.name
 
 
 class Run(models.Model):
@@ -22,6 +30,9 @@ class Run(models.Model):
                                    on_delete=models.CASCADE,
                                    related_name='runs')
 
+    def __str__(self):
+        return self.uuid
+
 
 class Metric(models.Model):
     """ Base class for logged metric. """
@@ -32,6 +43,9 @@ class Metric(models.Model):
                             on_delete=models.CASCADE,
                             related_name='metrics')
 
+    def __str__(self):
+        return "{}:{}".format(self.name, self.value)
+
 
 class Parameter(models.Model):
     """ Base class for logged parameter. """
@@ -41,6 +55,9 @@ class Parameter(models.Model):
     run = models.ForeignKey(Run,
                             on_delete=models.CASCADE,
                             related_name='parameters')
+
+    def __str__(self):
+        return "{}:{}".format(self.name, self.value)
 
 
 class Measurement(models.Model):
