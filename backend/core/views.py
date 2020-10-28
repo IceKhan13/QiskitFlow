@@ -1,7 +1,10 @@
+from django.http import JsonResponse
 from rest_framework import viewsets, renderers
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 
+from common.models import Experiment as ExperimentClass
+from utils.adapters import ObjectToModelAdapter
 from .models import Experiment, Run
 from .permissions import UserExperimentPermission, UserRunPermission
 from .serializers import ExperimentSerializer, RunSerializer
@@ -16,8 +19,20 @@ class ExperimentViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], renderer_classes=[renderers.JSONRenderer])
     def share(self, request, *args, **kwargs):
         """ Share experiment runs."""
-        # TODO: implement
-        raise NotImplementedError("Method is not implemented yet.")
+        if request.data:
+            # TODO: handle sourcecode archive upload
+
+            experiment_object = ExperimentClass.load_from_dict(request.data)
+            experiment = ObjectToModelAdapter.run(experiment_object, author=request.user)
+            experiment.save()
+
+            return JsonResponse({
+                "message": "Experiment #{} has been saved.".format(experiment.id)
+            })
+        else:
+            return JsonResponse({
+                "message": "No run data has been provided."
+            }, status=400)
 
     def get_queryset(self):
         """ Queryset should only return users own experiments. """

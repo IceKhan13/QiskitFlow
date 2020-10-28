@@ -72,6 +72,6 @@ class MeasurementEntry(models.Model):
     key = models.CharField(max_length=255)
     value = models.FloatField()
 
-    run = models.ForeignKey(Measurement,
-                            on_delete=models.CASCADE,
-                            related_name='entry')
+    measurement = models.ForeignKey(Measurement,
+                                    on_delete=models.CASCADE,
+                                    related_name='entries')
