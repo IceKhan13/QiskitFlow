@@ -4,22 +4,27 @@
  *
  */
 
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
-import { Table, Button, Tag } from 'antd';
+import { Table, Button, Tag, Pagination } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { Link } from 'react-router-dom';
-import makeSelectExperimentsList from './selectors';
+import {
+  makeSelectExperimentListItems,
+  makeSelectExperimentListLoading,
+  makeSelectExperimentListPage, makeSelectExperimentListTotal
+} from './selectors';
 import reducer from './reducer';
 import saga from './saga';
+import { getExperimentsAction } from './actions';
 
 const expandedRowRender = record => {
   const columns = [
@@ -77,70 +82,20 @@ const expandedRowRender = record => {
   );
 };
 
-const data = [...Array(20).keys()].map(idx => ({
-    key: idx,
-    id: idx,
-    createdAt: '2014-12-24 23:12:00',
-    name: 'This is production name',
-    tags: ['Qiskit', 'Teleportation'],
-    version: '0.0.1',
-    author: 'Admin',
-    n_runs: 10,
-    runs: [
-      {
-        uuid: '123123123asdasdasd',
-        name: 'Name',
-        metrics: [
-          {
-            name: 'runtime',
-            value: 10000,
-          },
-          {
-            name: 'somename',
-            value: 100,
-          },
-        ],
-        parameters: [
-          {
-            name: 'backend',
-            value: 'Tashkent',
-          },
-        ],
-        measurements: [],
-        entrypoint: null,
-      },
-      {
-        uuid: '123123123asdasdasd123',
-        name: 'Name',
-        metrics: [
-          {
-            name: 'runtime',
-            value: 10000,
-          },
-          {
-            name: 'somename',
-            value: 100,
-          },
-        ],
-        parameters: [
-          {
-            name: 'backend',
-            value: 'Tashkent',
-          },
-        ],
-        measurements: [],
-        entrypoint: null,
-      },
-    ],
-  }));
-
-export function ExperimentsList() {
+export function ExperimentsList({
+  loading,
+  page,
+  total,
+  items,
+  getExperiments
+}) {
   useInjectReducer({ key: 'experimentsList', reducer });
   useInjectSaga({ key: 'experimentsList', saga });
 
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(0);
-  const [experiments, setExperiments] = useState(data);
+  useEffect(() => {
+    getExperiments(1)
+  }, []);
+
   const columns = [
     {
       title: 'Name',
@@ -156,7 +111,7 @@ export function ExperimentsList() {
     },
     { title: 'Version', dataIndex: 'version', key: 'version' },
     { title: 'Author', dataIndex: 'author', key: 'author' },
-    { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
+    { title: 'Date', dataIndex: 'created_at', key: 'created_at' },
     {
       title: 'Tags',
       key: 'tags',
@@ -177,9 +132,18 @@ export function ExperimentsList() {
         <meta name="description" content="QiskitFlow. Experiments list." />
       </Helmet>
       <Table
+        loading={loading}
         columns={columns}
         expandable={{ expandedRowRender }}
-        dataSource={experiments}
+        dataSource={items}
+        pagination={
+          <Pagination
+            onChange={p => getExperiments(p)}
+            defaultCurrent={1}
+            current={page}
+            total={total}
+          />
+        }
       />
     </div>
   );
@@ -188,15 +152,25 @@ export function ExperimentsList() {
 ExperimentsList.propTypes = {
   // eslint-disable-next-line react/no-unused-prop-types
   dispatch: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+  page: PropTypes.number,
+  total: PropTypes.number,
+  items: PropTypes.array,
+  getExperiments: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
-  experimentsList: makeSelectExperimentsList(),
+  loading: makeSelectExperimentListLoading(),
+  page: makeSelectExperimentListPage(),
+  total: makeSelectExperimentListTotal(),
+  items: makeSelectExperimentListItems(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
+    // eslint-disable-next-line no-undef
+    getExperiments: page => dispatch(getExperimentsAction(page)),
   };
 }
 
