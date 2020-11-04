@@ -24,9 +24,17 @@ export function updateExperimentsAction(response) {
   };
 }
 
-export function getExperimentsAction(page) {
+export function getExperimentsAction(
+  page,
+  query = '',
+  dateStart = false,
+  dateEnd = false,
+) {
   return {
     type: GET_EXPERIMENTS,
-    page
+    page,
+    query,
+    dateStart,
+    dateEnd,
   };
 }

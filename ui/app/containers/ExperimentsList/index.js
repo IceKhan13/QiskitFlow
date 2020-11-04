@@ -4,14 +4,22 @@
  *
  */
 
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
-import { Table, Button, Tag, Pagination } from 'antd';
+import {
+  Table,
+  Button,
+  Tag,
+  Pagination,
+  Form,
+  AutoComplete,
+  DatePicker,
+} from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 
 import { useInjectSaga } from 'utils/injectSaga';
@@ -20,11 +28,64 @@ import { Link } from 'react-router-dom';
 import {
   makeSelectExperimentListItems,
   makeSelectExperimentListLoading,
-  makeSelectExperimentListPage, makeSelectExperimentListTotal
+  makeSelectExperimentListPage,
+  makeSelectExperimentListTotal,
 } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import { getExperimentsAction } from './actions';
+
+const { RangePicker } = DatePicker;
+
+const FilterForm = ({ page, getExperiments }) => {
+  const [query, setQuery] = useState('');
+  const [dateStart, setDateStart] = useState(false);
+  const [dateEnd, setDateEnd] = useState(false);
+
+  const onSearch = q => {
+    setQuery(q);
+    dispatchRequest();
+  };
+
+  const onSelect = selection => {
+    console.log('Selection:', selection);
+  };
+
+  const onDateChange = dates => {
+    const format = 'DD-MM-YYYY';
+    const [start, end] = dates;
+
+    setDateStart(start.format(format));
+    setDateEnd(end.format(format));
+
+    dispatchRequest();
+  };
+
+  const dispatchRequest = () => getExperiments(page, query, dateStart, dateEnd);
+
+  return (
+    <Form layout="inline" name="basic" style={{ padding: '16px' }}>
+      <Form.Item label="Search" name="query">
+        <AutoComplete
+          options={[]}
+          style={{ width: 500 }}
+          onSelect={onSelect}
+          onSearch={onSearch}
+          placeholder="Experiment name..."
+        />
+      </Form.Item>
+
+      <Form.Item name="dates" label="Dates">
+        <RangePicker onChange={onDateChange} />
+      </Form.Item>
+    </Form>
+  );
+};
+
+FilterForm.propTypes = {
+  page: PropTypes.number,
+  getExperiments: PropTypes.func,
+};
 
 const expandedRowRender = record => {
   const columns = [
@@ -78,23 +139,30 @@ const expandedRowRender = record => {
   ];
 
   return (
-    <Table columns={columns} dataSource={record.runs} pagination={false} />
+    <Table
+      size="small"
+      columns={columns}
+      dataSource={record.runs}
+      pagination={false}
+    />
   );
 };
+
+const key = 'experiments';
 
 export function ExperimentsList({
   loading,
   page,
   total,
   items,
-  getExperiments
+  getExperiments,
 }) {
-  useInjectReducer({ key: 'experimentsList', reducer });
-  useInjectSaga({ key: 'experimentsList', saga });
+  useInjectReducer({ key, reducer });
+  useInjectSaga({ key, saga });
 
   useEffect(() => {
-    getExperiments(1)
-  }, []);
+    if (items.length === 0) getExperiments(1);
+  });
 
   const columns = [
     {
@@ -131,6 +199,7 @@ export function ExperimentsList({
         <title>Experiments</title>
         <meta name="description" content="QiskitFlow. Experiments list." />
       </Helmet>
+      <FilterForm page={page} getExperiments={getExperiments} />
       <Table
         loading={loading}
         columns={columns}
@@ -169,8 +238,8 @@ const mapStateToProps = createStructuredSelector({
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
-    // eslint-disable-next-line no-undef
-    getExperiments: page => dispatch(getExperimentsAction(page)),
+    getExperiments: (page, query, dateStart, dateEnd) =>
+      dispatch(getExperimentsAction(page, query, dateStart, dateEnd)),
   };
 }
 

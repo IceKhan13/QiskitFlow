@@ -11,26 +11,31 @@ import {
 } from './constants';
 
 export const initialState = {
-  loading: false,
+  loading: true,
   page: 1,
   total: 0,
   items: [], // experiments
+  filter: {
+    query: '',
+    startDate: '',
+    endDate: '',
+  },
 };
 
 /* eslint-disable default-case, no-param-reassign */
 const experimentsListReducer = (state = initialState, action) =>
-  produce(state, () => {
+  produce(state, draft => {
     switch (action.type) {
       case DEFAULT_ACTION:
         break;
       case GET_EXPERIMENTS:
-        state.loading = true;
-        state.page = action.page;
+        draft.loading = true;
+        draft.page = action.page;
         break;
       case UPDATE_EXPERIMENTS:
-        state.items = action.items;
-        state.total = action.total;
-        state.loading = false;
+        draft.items = action.items;
+        draft.total = action.total;
+        draft.loading = false;
         break;
     }
   });

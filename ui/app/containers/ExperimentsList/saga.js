@@ -5,9 +5,11 @@ import { updateExperimentsAction } from './actions';
 import { repoLoadingError } from '../App/actions';
 import { GET_EXPERIMENTS } from './constants';
 
-export function* getExperiments({ page }) {
+export function* getExperiments({ page, query, dateStart, dateEnd }) {
   // eslint-disable-next-line no-console
-  console.log(`Request for experiments page ${page}`);
+  console.log(
+    `Request for experiments with params ${page} ${query} ${dateStart} ${dateEnd}`,
+  );
   const requestUrl = `https://run.mocky.io/v3/c21c6c4f-1164-46a6-849c-720b84b3cce0`;
 
   try {
@@ -18,6 +20,6 @@ export function* getExperiments({ page }) {
   }
 }
 
-export default function* experimentsData() {
+export default function* experimentsList() {
   yield takeLatest(GET_EXPERIMENTS, getExperiments);
 }
