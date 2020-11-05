@@ -26,6 +26,7 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { Link } from 'react-router-dom';
+import FilterForm from 'containers/GeneralFilter';
 import {
   makeSelectExperimentListFilter,
   makeSelectExperimentListItems,
@@ -45,56 +46,7 @@ import {
 
 const { RangePicker } = DatePicker;
 
-const FilterForm = ({
-  filter,
-  setFilterDateStart,
-  setFilterDateEnd,
-  setFilterQuery,
-}) => {
-  const onSearch = q => {
-    setFilterQuery(q);
-  };
 
-  const onSelect = selection => {
-    console.log('Selection:', selection);
-  };
-
-  const onDateChange = dates => {
-    const format = 'DD-MM-YYYY';
-    const [start, end] = dates;
-
-    setFilterDateStart(start.format(format));
-    setFilterDateEnd(end.format(format));
-  };
-
-  console.log(filter);
-
-  return (
-    <Form layout="inline" name="basic" style={{ padding: '16px' }}>
-      <Form.Item label="Search" name="query">
-        <AutoComplete
-          options={[]}
-          value={filter.query}
-          style={{ width: 500 }}
-          onSelect={onSelect}
-          onSearch={debounce(onSearch, 500)}
-          placeholder="Experiment name..."
-        />
-      </Form.Item>
-
-      <Form.Item name="dates" label="Dates">
-        <RangePicker onChange={onDateChange} />
-      </Form.Item>
-    </Form>
-  );
-};
-
-FilterForm.propTypes = {
-  setFilterDateStart: PropTypes.func,
-  setFilterDateEnd: PropTypes.func,
-  setFilterQuery: PropTypes.func,
-  filter: PropTypes.object,
-};
 
 const expandedRowRender = record => {
   const columns = [

@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -16,12 +16,21 @@ import { useInjectReducer } from 'utils/injectReducer';
 import { DeleteOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { Table, Button } from 'antd';
+import FilterForm from 'containers/GeneralFilter';
 import {
   makeSelectExperimentRunsListItems,
   makeSelectExperimentRunsListLoading,
   makeSelectExperimentRunsListPage,
   makeSelectExperimentRunsListTotal,
+  makeSelectExperimentRunsListFilter,
 } from './selectors';
+import {
+  getRunsAction, setExperimentIdAction,
+  setFilterDateEndAction,
+  setFilterDateStartAction,
+  setFilterQueryAction,
+  setPageAction
+} from './actions';
 import reducer from './reducer';
 import saga from './saga';
 
@@ -33,12 +42,23 @@ export function ExperimentRunsList({
   items,
   loading,
   total,
+  filter,
   getRuns,
+  setFilterDateStart,
+  setFilterDateEnd,
+  setFilterQuery,
+  setPage,
+  setExperimentId,
 }) {
   useInjectReducer({ key, reducer });
   useInjectSaga({ key, saga });
 
   const id = match.params.experimentId;
+
+  useEffect(() => {
+    setExperimentId(id);
+    if (items.length === 0) getRuns();
+  });
 
   const columns = [
     {
@@ -96,11 +116,17 @@ export function ExperimentRunsList({
         <title>Runs for {id}</title>
         <meta name="description" content={`Runs for experiment ${id}`} />
       </Helmet>
+      <FilterForm
+        setFilterDateStart={setFilterDateStart}
+        setFilterDateEnd={setFilterDateEnd}
+        setFilterQuery={setFilterQuery}
+        filter={filter}
+      />
       <Table
         loading={loading}
         columns={columns}
         dataSource={items}
-        onChange={p => getRuns(p)}
+        onChange={p => setPage(p)}
         defaultCurrent={1}
         current={page}
         total={total}
@@ -115,7 +141,13 @@ ExperimentRunsList.propTypes = {
   loading: PropTypes.bool,
   page: PropTypes.number,
   total: PropTypes.number,
+  filter: PropTypes.object,
   getRuns: PropTypes.func,
+  setFilterDateStart: PropTypes.func,
+  setFilterDateEnd: PropTypes.func,
+  setFilterQuery: PropTypes.func,
+  setPage: PropTypes.func,
+  setExperimentId: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -123,13 +155,20 @@ const mapStateToProps = createStructuredSelector({
   loading: makeSelectExperimentRunsListLoading(),
   page: makeSelectExperimentRunsListPage(),
   total: makeSelectExperimentRunsListTotal(),
+  filter: makeSelectExperimentRunsListFilter(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
-    getRuns: (page, query, dateStart, dateEnd) =>
-      console.log(page, query, dateStart, dateEnd),
+    getRuns: () => dispatch(getRunsAction()),
+    setFilterDateStart: dateStart =>
+      dispatch(setFilterDateStartAction(dateStart)),
+    setFilterDateEnd: dateEnd => dispatch(setFilterDateEndAction(dateEnd)),
+    setFilterQuery: query => dispatch(setFilterQueryAction(query)),
+    setPage: page => dispatch(setPageAction(page)),
+    setExperimentId: experimentId =>
+      dispatch(setExperimentIdAction(experimentId)),
   };
 }
 

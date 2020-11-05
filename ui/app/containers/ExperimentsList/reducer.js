@@ -10,7 +10,7 @@ import {
   UPDATE_EXPERIMENTS,
   SET_FILTER_DATE_END,
   SET_FILTER_DATE_START,
-  SET_FILTER_QUERY
+  SET_FILTER_QUERY,
 } from './constants';
 
 export const initialState = {

@@ -6,25 +6,37 @@ const selectExperimentsRunsList = state => state.runs || initialState;
 const makeSelectExperimentRunsListItems = () =>
   createSelector(
     selectExperimentsRunsList,
-    experimentsListState => experimentsListState.items,
+    state => state.items,
   );
 
 const makeSelectExperimentRunsListPage = () =>
   createSelector(
     selectExperimentsRunsList,
-    experimentsListState => experimentsListState.page,
+    state => state.page,
   );
 
 const makeSelectExperimentRunsListLoading = () =>
   createSelector(
     selectExperimentsRunsList,
-    experimentsListState => experimentsListState.loading,
+    state => state.loading,
   );
 
 const makeSelectExperimentRunsListTotal = () =>
   createSelector(
     selectExperimentsRunsList,
-    experimentsListState => experimentsListState.total,
+    state => state.total,
+  );
+
+const makeSelectExperimentRunsListFilter = () =>
+  createSelector(
+    selectExperimentsRunsList,
+    state => state.filter,
+  );
+
+const makeSelectExperimentRunsListExperimentId = () =>
+  createSelector(
+    selectExperimentsRunsList,
+    state => state.experimentId,
   );
 
 export {
@@ -32,4 +44,6 @@ export {
   makeSelectExperimentRunsListPage,
   makeSelectExperimentRunsListLoading,
   makeSelectExperimentRunsListTotal,
+  makeSelectExperimentRunsListFilter,
+  makeSelectExperimentRunsListExperimentId,
 };
