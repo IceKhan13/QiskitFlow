@@ -1,26 +1,35 @@
 import { createSelector } from 'reselect';
 import { initialState } from './reducer';
 
-/**
- * Direct selector to the experimentRunsList state domain
- */
+const selectExperimentsRunsList = state => state.runs || initialState;
 
-const selectExperimentRunsListDomain = state =>
-  state.experimentRunsList || initialState;
-
-/**
- * Other specific selectors
- */
-
-/**
- * Default selector used by ExperimentRunsList
- */
-
-const makeSelectExperimentRunsList = () =>
+const makeSelectExperimentRunsListItems = () =>
   createSelector(
-    selectExperimentRunsListDomain,
-    substate => substate,
+    selectExperimentsRunsList,
+    experimentsListState => experimentsListState.items,
   );
 
-export default makeSelectExperimentRunsList;
-export { selectExperimentRunsListDomain };
+const makeSelectExperimentRunsListPage = () =>
+  createSelector(
+    selectExperimentsRunsList,
+    experimentsListState => experimentsListState.page,
+  );
+
+const makeSelectExperimentRunsListLoading = () =>
+  createSelector(
+    selectExperimentsRunsList,
+    experimentsListState => experimentsListState.loading,
+  );
+
+const makeSelectExperimentRunsListTotal = () =>
+  createSelector(
+    selectExperimentsRunsList,
+    experimentsListState => experimentsListState.total,
+  );
+
+export {
+  makeSelectExperimentRunsListItems,
+  makeSelectExperimentRunsListPage,
+  makeSelectExperimentRunsListLoading,
+  makeSelectExperimentRunsListTotal,
+};

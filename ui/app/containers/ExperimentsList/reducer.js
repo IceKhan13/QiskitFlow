@@ -8,6 +8,9 @@ import {
   DEFAULT_ACTION,
   GET_EXPERIMENTS,
   UPDATE_EXPERIMENTS,
+  SET_FILTER_DATE_END,
+  SET_FILTER_DATE_START,
+  SET_FILTER_QUERY
 } from './constants';
 
 export const initialState = {
@@ -17,8 +20,8 @@ export const initialState = {
   items: [], // experiments
   filter: {
     query: '',
-    startDate: '',
-    endDate: '',
+    dateStart: false,
+    dateEnd: false,
   },
 };
 
@@ -30,12 +33,21 @@ const experimentsListReducer = (state = initialState, action) =>
         break;
       case GET_EXPERIMENTS:
         draft.loading = true;
-        draft.page = action.page;
         break;
       case UPDATE_EXPERIMENTS:
         draft.items = action.items;
         draft.total = action.total;
+        draft.page = action.page;
         draft.loading = false;
+        break;
+      case SET_FILTER_QUERY:
+        draft.filter = { ...state.filter, query: action.query };
+        break;
+      case SET_FILTER_DATE_START:
+        draft.filter = { ...state.filter, dateStart: action.dateStart };
+        break;
+      case SET_FILTER_DATE_END:
+        draft.filter = { ...state.filter, dateEnd: action.dateEnd };
         break;
     }
   });

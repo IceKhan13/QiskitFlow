@@ -4,12 +4,13 @@
  *
  */
 
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
+import debounce from 'lodash/debounce';
 
 import {
   Table,
@@ -26,6 +27,7 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { Link } from 'react-router-dom';
 import {
+  makeSelectExperimentListFilter,
   makeSelectExperimentListItems,
   makeSelectExperimentListLoading,
   makeSelectExperimentListPage,
@@ -33,18 +35,24 @@ import {
 } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import { getExperimentsAction } from './actions';
+import {
+  getExperimentsAction,
+  setFilterDateEndAction,
+  setFilterDateStartAction,
+  setFilterQueryAction,
+  setPageAction
+} from './actions';
 
 const { RangePicker } = DatePicker;
 
-const FilterForm = ({ page, getExperiments }) => {
-  const [query, setQuery] = useState('');
-  const [dateStart, setDateStart] = useState(false);
-  const [dateEnd, setDateEnd] = useState(false);
-
+const FilterForm = ({
+  filter,
+  setFilterDateStart,
+  setFilterDateEnd,
+  setFilterQuery,
+}) => {
   const onSearch = q => {
-    setQuery(q);
-    dispatchRequest();
+    setFilterQuery(q);
   };
 
   const onSelect = selection => {
@@ -55,22 +63,21 @@ const FilterForm = ({ page, getExperiments }) => {
     const format = 'DD-MM-YYYY';
     const [start, end] = dates;
 
-    setDateStart(start.format(format));
-    setDateEnd(end.format(format));
-
-    dispatchRequest();
+    setFilterDateStart(start.format(format));
+    setFilterDateEnd(end.format(format));
   };
 
-  const dispatchRequest = () => getExperiments(page, query, dateStart, dateEnd);
+  console.log(filter);
 
   return (
     <Form layout="inline" name="basic" style={{ padding: '16px' }}>
       <Form.Item label="Search" name="query">
         <AutoComplete
           options={[]}
+          value={filter.query}
           style={{ width: 500 }}
           onSelect={onSelect}
-          onSearch={onSearch}
+          onSearch={debounce(onSearch, 500)}
           placeholder="Experiment name..."
         />
       </Form.Item>
@@ -83,8 +90,10 @@ const FilterForm = ({ page, getExperiments }) => {
 };
 
 FilterForm.propTypes = {
-  page: PropTypes.number,
-  getExperiments: PropTypes.func,
+  setFilterDateStart: PropTypes.func,
+  setFilterDateEnd: PropTypes.func,
+  setFilterQuery: PropTypes.func,
+  filter: PropTypes.object,
 };
 
 const expandedRowRender = record => {
@@ -155,7 +164,12 @@ export function ExperimentsList({
   page,
   total,
   items,
+  filter,
   getExperiments,
+  setFilterDateStart,
+  setFilterDateEnd,
+  setFilterQuery,
+  setPage,
 }) {
   useInjectReducer({ key, reducer });
   useInjectSaga({ key, saga });
@@ -199,7 +213,12 @@ export function ExperimentsList({
         <title>Experiments</title>
         <meta name="description" content="QiskitFlow. Experiments list." />
       </Helmet>
-      <FilterForm page={page} getExperiments={getExperiments} />
+      <FilterForm
+        setFilterDateStart={setFilterDateStart}
+        setFilterDateEnd={setFilterDateEnd}
+        setFilterQuery={setFilterQuery}
+        filter={filter}
+      />
       <Table
         loading={loading}
         columns={columns}
@@ -207,7 +226,7 @@ export function ExperimentsList({
         dataSource={items}
         pagination={
           <Pagination
-            onChange={p => getExperiments(p)}
+            onChange={p => setPage(p)}
             defaultCurrent={1}
             current={page}
             total={total}
@@ -225,7 +244,12 @@ ExperimentsList.propTypes = {
   page: PropTypes.number,
   total: PropTypes.number,
   items: PropTypes.array,
+  filter: PropTypes.object,
   getExperiments: PropTypes.func,
+  setFilterDateStart: PropTypes.func,
+  setFilterDateEnd: PropTypes.func,
+  setFilterQuery: PropTypes.func,
+  setPage: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -233,13 +257,18 @@ const mapStateToProps = createStructuredSelector({
   page: makeSelectExperimentListPage(),
   total: makeSelectExperimentListTotal(),
   items: makeSelectExperimentListItems(),
+  filter: makeSelectExperimentListFilter(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
-    getExperiments: (page, query, dateStart, dateEnd) =>
-      dispatch(getExperimentsAction(page, query, dateStart, dateEnd)),
+    getExperiments: () => dispatch(getExperimentsAction()),
+    setFilterDateStart: dateStart =>
+      dispatch(setFilterDateStartAction(dateStart)),
+    setFilterDateEnd: dateEnd => dispatch(setFilterDateEndAction(dateEnd)),
+    setFilterQuery: query => dispatch(setFilterQueryAction(query)),
+    setPage: page => dispatch(setPageAction(page)),
   };
 }
 
