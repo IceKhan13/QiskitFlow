@@ -4,6 +4,7 @@
 
 const path = require('path');
 const webpack = require('webpack');
+const { getThemeVariables } = require('antd/dist/theme');
 
 module.exports = options => ({
   mode: options.mode,
@@ -19,6 +20,29 @@ module.exports = options => ({
   optimization: options.optimization,
   module: {
     rules: [
+      {
+        test: /\.less$/,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader', // translates CSS into CommonJS
+          },
+          {
+            loader: 'less-loader', // compiles Less to CSS
+            options: {
+              lessOptions: {
+                modifyVars: {
+                  'primary-color': '#6929C2',
+                  'link-color': '#6929C2',
+                },
+                javascriptEnabled: true,
+              },
+            },
+          },
+        ],
+      },
       {
         test: /\.jsx?$/, // Transform all .js and .jsx files required somewhere with Babel
         exclude: /node_modules/,
