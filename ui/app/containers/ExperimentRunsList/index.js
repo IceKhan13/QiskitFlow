@@ -25,11 +25,12 @@ import {
   makeSelectExperimentRunsListFilter,
 } from './selectors';
 import {
-  getRunsAction, setExperimentIdAction,
+  getRunsAction,
+  setExperimentIdAction,
   setFilterDateEndAction,
   setFilterDateStartAction,
   setFilterQueryAction,
-  setPageAction
+  setPageAction,
 } from './actions';
 import reducer from './reducer';
 import saga from './saga';

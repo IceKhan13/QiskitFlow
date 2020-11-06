@@ -8,8 +8,8 @@
 
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Switch, Route } from 'react-router-dom';
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { Switch, Route, Link } from 'react-router-dom';
+import { Layout, Menu } from 'antd';
 
 import {
   DesktopOutlined,
@@ -54,7 +54,7 @@ export default function App() {
               Dashboard
             </Menu.Item>
             <Menu.Item key="experiments" icon={<DesktopOutlined />}>
-              Experiments
+              <Link to="/experiments">Experiments</Link>
             </Menu.Item>
             <SubMenu key="profile" icon={<UserOutlined />} title="Profile">
               <Menu.Item key="profile">Profile</Menu.Item>

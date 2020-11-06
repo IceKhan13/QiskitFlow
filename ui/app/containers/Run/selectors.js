@@ -21,5 +21,42 @@ const makeSelectRun = () =>
     substate => substate,
   );
 
+const makeSelectRunMetrics = () =>
+  createSelector(
+    selectRunDomain,
+    state => state.metrics,
+  );
+
+const makeSelectRunParameters = () =>
+  createSelector(
+    selectRunDomain,
+    state => state.parameters,
+  );
+
+const makeSelectRunMeasurements = () =>
+  createSelector(
+    selectRunDomain,
+    state => state.measurements,
+  );
+
+const makeSelectRunExperiment = () =>
+  createSelector(
+    selectRunDomain,
+    state => state.experiment,
+  );
+
+const makeSelectRunId = () =>
+  createSelector(
+    selectRunDomain,
+    state => state.runId,
+  );
+
 export default makeSelectRun;
-export { selectRunDomain };
+export {
+  selectRunDomain,
+  makeSelectRunMetrics,
+  makeSelectRunParameters,
+  makeSelectRunMeasurements,
+  makeSelectRunExperiment,
+  makeSelectRunId,
+};
