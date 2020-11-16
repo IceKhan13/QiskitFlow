@@ -8,7 +8,14 @@
  */
 
 import produce from 'immer';
-import { LOAD_REPOS_SUCCESS, LOAD_REPOS, LOAD_REPOS_ERROR } from './constants';
+import {
+  LOAD_REPOS_SUCCESS,
+  LOAD_REPOS,
+  LOAD_REPOS_ERROR,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_ERROR,
+  USER_LOGOUT,
+} from './constants';
 
 // The initial state of the App
 export const initialState = {
@@ -17,6 +24,12 @@ export const initialState = {
   currentUser: false,
   userData: {
     repositories: false,
+  },
+  loggedIn: false,
+  loginError: false,
+  user: {
+    username: '',
+    email: '',
   },
 };
 
@@ -39,6 +52,24 @@ const appReducer = (state = initialState, action) =>
       case LOAD_REPOS_ERROR:
         draft.error = action.error;
         draft.loading = false;
+        break;
+
+      case USER_LOGIN_SUCCESS:
+        draft.loggedIn = true;
+        draft.user = action.user;
+        break;
+
+      case USER_LOGIN_ERROR:
+        draft.loggedIn = false;
+        draft.loginError = action.error;
+        draft.user = initialState.user;
+        break;
+
+      case USER_LOGOUT:
+        console.log("LOGGING OUT!")
+        draft.loggedIn = false;
+        draft.loginError = false;
+        draft.user = initialState.user;
         break;
     }
   });

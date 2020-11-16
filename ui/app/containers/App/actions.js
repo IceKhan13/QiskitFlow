@@ -15,7 +15,16 @@
  *    }
  */
 
-import { LOAD_REPOS, LOAD_REPOS_SUCCESS, LOAD_REPOS_ERROR } from './constants';
+import {
+  LOAD_REPOS,
+  LOAD_REPOS_SUCCESS,
+  LOAD_REPOS_ERROR,
+  USER_LOGIN,
+  USER_LOGIN_ERROR,
+  USER_LOGIN_SUCCESS,
+  USER_LOGOUT,
+  GET_PROFILE,
+} from './constants';
 
 /**
  * Load the repositories, this action starts the request saga
@@ -55,5 +64,45 @@ export function repoLoadingError(error) {
   return {
     type: LOAD_REPOS_ERROR,
     error,
+  };
+}
+
+/**
+ * Login
+ *
+ * @param username {string}
+ * @param password {string}
+ */
+export function loginAction(username, password) {
+  return {
+    type: USER_LOGIN,
+    username,
+    password,
+  };
+}
+
+export function loginSuccessAction(user) {
+  return {
+    type: USER_LOGIN_SUCCESS,
+    user,
+  };
+}
+
+export function loginErrorAction(error) {
+  return {
+    type: USER_LOGIN_ERROR,
+    error,
+  };
+}
+
+export function logoutAction() {
+  return {
+    type: USER_LOGOUT,
+  };
+}
+
+export function profileAction() {
+  return {
+    type: GET_PROFILE,
   };
 }
