@@ -30,7 +30,7 @@ import { makeSelectLoggedIn, makeSelectUser } from './selectors';
 import { logoutAction, profileAction } from './actions';
 import saga from '../Login/saga';
 import { useInjectSaga } from '../../utils/injectSaga';
-import Login from '../Login';
+import HomePage from '../HomePage/Loadable';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -60,10 +60,10 @@ function App({ user, loggedIn, logoutUser, getProfile }) {
         mode="inline"
       >
         <Menu.Item key="home" icon={<PieChartOutlined />}>
-          Dashboard
+          <Link to="/">Dashboard</Link>
         </Menu.Item>
         <Menu.Item key="experiments" icon={<DesktopOutlined />}>
-          <Link to="/experiments">Experiments</Link>
+          <Link to="/experiments">My experiments</Link>
         </Menu.Item>
         <SubMenu key="profile" icon={<UserOutlined />} title="Profile">
           <Menu.Item key="profile">{`${user.username} profile`}</Menu.Item>
@@ -79,17 +79,6 @@ function App({ user, loggedIn, logoutUser, getProfile }) {
     </Sider>
   ) : (
     ''
-  );
-
-  const loginForm = loggedIn ? (
-    ''
-  ) : (
-    <div
-      className="site-layout-background"
-      style={{ padding: 24, margin: '16px 0', background: '#fff' }}
-    >
-      <Login />
-    </div>
   );
 
   return (
@@ -108,13 +97,12 @@ function App({ user, loggedIn, logoutUser, getProfile }) {
         <Layout className="site-layout">
           <Header className="site-layout-background" style={{ padding: 0 }} />
           <Content style={{ margin: '16px 16px' }}>
-            {loginForm}
             <div
               className="site-layout-background"
               style={{ padding: 24, minHeight: 360, background: '#fff' }}
             >
               <Switch>
-                <Route exact path="/" component={ExperimentsList} />
+                <Route exact path="/" component={HomePage} />
                 <Route exact path="/experiments" component={ExperimentsList} />
                 <Route
                   path="/experiments/:experimentId"

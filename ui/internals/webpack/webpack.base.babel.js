@@ -36,6 +36,9 @@ module.exports = options => ({
                 modifyVars: {
                   'primary-color': '#6929C2',
                   'link-color': '#6929C2',
+                  'layout-header-background': '#1c1c1c',
+                  'layout-trigger-background': '#1c1c1c',
+                  'menu-dark-submenu-bg': '#1c1c1c',
                 },
                 javascriptEnabled: true,
               },

@@ -10,16 +10,27 @@ import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
-import { Row, Col, Table, Divider } from 'antd';
+import {
+  Row,
+  Col,
+  Table,
+  Divider,
+  Card,
+  Skeleton,
+  Typography,
+  Tree,
+} from 'antd';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-
+import { InfoCircleOutlined, DownOutlined } from '@ant-design/icons';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import makeSelectRun from './selectors';
 import { getRunAction } from './actions';
 import reducer from './reducer';
 import saga from './saga';
+
+const { Text, Paragraph } = Typography;
 
 const columns = [
   {
@@ -70,10 +81,10 @@ export function Run({ run, match, getRun }) {
 
     return (
       // eslint-disable-next-line react/no-array-index-key
-      <div key={`measurements_chart_${idx}`}>
+      <Card key={`measurements_chart_${idx}`} style={{ margin: '20px 0' }}>
         <HighchartsReact highcharts={Highcharts} options={options} />
         <Divider />
-      </div>
+      </Card>
     );
   });
 
@@ -86,26 +97,88 @@ export function Run({ run, match, getRun }) {
       <div>
         <h1>{`Run [${runId}]`}</h1>
         <Divider />
-        <Row gutter={[30, 16]}>
+        <Row gutter={[16, 16]}>
           <Col span={12}>
-            <h2>Parameters</h2>
-            <Table
-              key="parameters_table"
-              dataSource={run.parameters}
-              columns={columns}
-              pagination={false}
-            />
-            <Divider />
-            <h2>Metrics</h2>
-            <Table
-              key="metrics_table"
-              dataSource={run.metrics}
-              columns={columns}
-              pagination={false}
-            />
+            <Card title="Information" extra={<InfoCircleOutlined />}>
+              <b>Backend</b>: Aer
+              <br />
+              <b>Qiskit version</b>: 0.23.1
+              <br />
+              <b>QiskitFlow version</b>: 0.0.1-aplha
+              <br />
+              <br />
+              <b>Execute experiment</b>:{' '}
+              <Text code>{`docker run qiskitflow:experiment_${runId}`}</Text>
+              <br />
+              <br />
+              <b>BibTeX</b>:
+              <Paragraph copyable>
+                {`@software{QiskitFlow,
+                        author = {Admin},
+                        title = {Quantum experiment ${runId}},
+                        url = {http://localhost:3000/runs/${runId}},
+                        version = {0.0.0-alpha},
+                        date = {2020-10-08}
+                        }`}
+              </Paragraph>
+            </Card>
+            <Card title="Parameters" style={{ margin: '20px 0' }}>
+              <Table
+                key="parameters_table"
+                dataSource={run.parameters}
+                columns={columns}
+                pagination={false}
+              />
+            </Card>
+            <Card title="Metrics" style={{ margin: '20px 0' }}>
+              <Table
+                key="metrics_table"
+                dataSource={run.metrics}
+                columns={columns}
+                pagination={false}
+              />
+            </Card>
           </Col>
           <Col span={12}>
-            <h2>Measurements</h2>
+            <Card
+              title="Experiment description"
+              style={{ margin: '0 0 20px 0' }}
+            >
+              <Skeleton avatar paragraph={{ rows: 4 }} />
+            </Card>
+            <Card title="Files">
+              <Tree
+                showLine
+                switcherIcon={<DownOutlined />}
+                defaultExpandedKeys={['0-0-0']}
+                treeData={[
+                  {
+                    title: 'root',
+                    key: '0-0',
+                    children: [
+                      {
+                        title: 'utils',
+                        key: '0-0-0',
+                        children: [
+                          {
+                            title: 'utils.py',
+                            key: '0-0-0-0',
+                          },
+                          {
+                            title: '__init__.py',
+                            key: '0-0-0-1',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    title: 'quantum_teleportation.py',
+                    key: '0-1',
+                  },
+                ]}
+              />
+            </Card>
             {measurements}
           </Col>
         </Row>

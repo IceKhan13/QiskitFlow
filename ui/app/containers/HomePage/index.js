@@ -4,123 +4,103 @@
  * This is the first thing users see of our App, at the '/' route
  */
 
-import React, { useEffect, memo } from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { DatePicker } from 'antd';
+import { Row, Col, Skeleton, Card, Divider, Steps } from 'antd';
 
 import { useInjectReducer } from 'utils/injectReducer';
 import { useInjectSaga } from 'utils/injectSaga';
 import {
-  makeSelectRepos,
   makeSelectLoading,
-  makeSelectError,
+  makeSelectLoggedIn,
+  makeSelectUser,
 } from 'containers/App/selectors';
-import AtPrefix from './AtPrefix';
-import CenteredSection from './CenteredSection';
-import Form from './Form';
-import Input from './Input';
-import Section from './Section';
-import messages from './messages';
-import { loadRepos } from '../App/actions';
-import { changeUsername } from './actions';
-import { makeSelectUsername } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
+import Login from '../Login/Loadable';
+import SharedRunsList from '../SharedRunsList/Loadable';
+
+const { Step } = Steps;
 
 const key = 'home';
 
-export function HomePage({
-  username,
-  loading,
-  error,
-  repos,
-  onSubmitForm,
-  onChangeUsername,
-}) {
+export function HomePage({ dispatch, user, loggedIn, loading }) {
   useInjectReducer({ key, reducer });
   useInjectSaga({ key, saga });
 
-  useEffect(() => {
-    // When initial state username is not null, submit the form to load repos
-    if (username && username.trim().length > 0) onSubmitForm();
-  }, []);
-
-  const reposListProps = {
-    loading,
-    error,
-    repos,
-  };
+  const loginForm = loggedIn ? '' : <Login />;
 
   return (
-    <article>
+    <div>
       <Helmet>
-        <title>Home Page</title>
-        <meta
-          name="description"
-          content="A React.js Boilerplate application homepage"
-        />
+        <title>Dashboard</title>
       </Helmet>
-      <div>
-        <CenteredSection>
-          <div>
-            <DatePicker />
-          </div>
-          <FormattedMessage {...messages.startProjectHeader} />
-          <p>
-            <FormattedMessage {...messages.startProjectMessage} />
-          </p>
-        </CenteredSection>
-        <Section>
-          <FormattedMessage {...messages.trymeHeader} />
-          <Form onSubmit={onSubmitForm}>
-            <label htmlFor="username">
-              <FormattedMessage {...messages.trymeMessage} />
-              <AtPrefix>
-                <FormattedMessage {...messages.trymeAtPrefix} />
-              </AtPrefix>
-              <Input
-                id="username"
-                type="text"
-                placeholder="mxstbr"
-                value={username}
-                onChange={onChangeUsername}
+      <Row gutter={[16, 16]}>
+        <Col span={18}>
+          <Card title="Greetings" style={{ margin: '20px 0' }}>
+            <Skeleton avatar paragraph={{ rows: 4 }} />
+          </Card>
+          <Divider />
+          <h2>Shared experiments</h2>
+          <SharedRunsList />
+        </Col>
+        <Col span={6}>
+          <Card title="QiskitFlow info" style={{ margin: '20px 0' }}>
+            <b>Build</b>: 0.0.1-alpha
+            <br />
+            <b>Uptime</b>: 10 days
+            <br />
+            <b>Email</b>: qiskitflow@gmail.com
+          </Card>
+          <img
+            src="https://media.giphy.com/media/CamIr5pLSEU6xfC6Ro/giphy.gif"
+            alt="QiskitFlow 3d"
+            width="100%"
+          />
+          {loginForm}
+          <Card title="Roadmap" style={{ margin: '20px 0' }}>
+            <Steps direction="vertical" current={1}>
+              <Step
+                title="Alpha release"
+                description="Alpha release for closed testing"
               />
-            </label>
-          </Form>
-        </Section>
-      </div>
-    </article>
+              <Step title="Testing" description="Testing is in progress" />
+              <Step
+                title="Genera public release"
+                description="Release for general public with open registration"
+              />
+              <Step
+                title="Experiments compiler"
+                description="Compiler backend for compiling executable images for running experiments"
+              />
+            </Steps>
+          </Card>
+        </Col>
+      </Row>
+    </div>
   );
 }
 
 HomePage.propTypes = {
   loading: PropTypes.bool,
-  error: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
-  repos: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
-  onSubmitForm: PropTypes.func,
-  username: PropTypes.string,
-  onChangeUsername: PropTypes.func,
+  user: PropTypes.object,
+  loggedIn: PropTypes.bool,
+  dispatch: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
-  repos: makeSelectRepos(),
-  username: makeSelectUsername(),
+  user: makeSelectUser(),
   loading: makeSelectLoading(),
-  error: makeSelectError(),
+  loggedIn: makeSelectLoggedIn(),
 });
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onChangeUsername: evt => dispatch(changeUsername(evt.target.value)),
-    onSubmitForm: evt => {
-      if (evt !== undefined && evt.preventDefault) evt.preventDefault();
-      dispatch(loadRepos());
-    },
+    dispatch,
   };
 }
 

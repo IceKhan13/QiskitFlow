@@ -15,7 +15,7 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { DeleteOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { Table, Button } from 'antd';
+import {Table, Button, Card, Skeleton} from 'antd';
 import FilterForm from 'containers/GeneralFilter';
 import {
   makeSelectExperimentRunsListItems,
@@ -117,6 +117,9 @@ export function ExperimentRunsList({
         <title>Runs for {id}</title>
         <meta name="description" content={`Runs for experiment ${id}`} />
       </Helmet>
+      <Card title="Runs list">
+        <Skeleton avatar paragraph={{ rows: 2 }} />
+      </Card>
       <FilterForm
         setFilterDateStart={setFilterDateStart}
         setFilterDateEnd={setFilterDateEnd}

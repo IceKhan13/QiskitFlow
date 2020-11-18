@@ -11,12 +11,7 @@ import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
-import {
-  Table,
-  Button,
-  Tag,
-  Pagination,
-} from 'antd';
+import { Table, Button, Tag, Pagination, Card, Skeleton } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 
 import { useInjectSaga } from 'utils/injectSaga';
@@ -158,6 +153,9 @@ export function ExperimentsList({
         <title>Experiments</title>
         <meta name="description" content="QiskitFlow. Experiments list." />
       </Helmet>
+      <Card title="Experiments list">
+        <Skeleton avatar paragraph={{ rows: 2 }} />
+      </Card>
       <FilterForm
         setFilterDateStart={setFilterDateStart}
         setFilterDateEnd={setFilterDateEnd}

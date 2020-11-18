@@ -42,7 +42,7 @@ const FilterForm = ({
           style={{ width: 500 }}
           onSelect={onSelect}
           onSearch={debounce(onSearch, 500)}
-          placeholder="Experiment name..."
+          placeholder="Name..."
         />
       </Form.Item>
 

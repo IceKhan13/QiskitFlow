@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, Card } from 'antd';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
@@ -41,8 +41,7 @@ export function Login({ login, user, loggedIn }) {
   };
 
   return (
-    <div>
-      <h3>Login form</h3>
+    <Card title="Login form" style={{ marginTop: 20}}>
       <Form
         {...layout}
         name="login-form"
@@ -72,7 +71,7 @@ export function Login({ login, user, loggedIn }) {
           </Button>
         </Form.Item>
       </Form>
-    </div>
+    </Card>
   );
 }
 
