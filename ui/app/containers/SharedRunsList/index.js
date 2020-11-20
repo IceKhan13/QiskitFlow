@@ -4,19 +4,25 @@
  *
  */
 
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
-import { Table, Tag, Space, Button } from 'antd';
+import { Table } from 'antd';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { Link } from 'react-router-dom';
-import makeSelectSharedRunsList from './selectors';
+import {
+  makeSelectSharedRunsPage,
+  makeSelectSharedRunsLoading,
+  makeSelectSharedRunsTotal,
+  makeSelectSharedRunsItems,
+} from './selectors';
 import reducer from './reducer';
 import saga from './saga';
+import { getRunsAction } from './actions';
 
 const columns = [
   {
@@ -58,38 +64,36 @@ const columns = [
   {
     title: 'Author',
     dataIndex: 'author',
-    key: 'author'
+    key: 'author',
   },
 ];
 
-export function SharedRunsList() {
+export function SharedRunsList({
+  getRuns,
+  items,
+  total,
+  page,
+  loading,
+  setPage,
+}) {
   useInjectReducer({ key: 'sharedRunsList', reducer });
   useInjectSaga({ key: 'sharedRunsList', saga });
 
-  const data = [...new Array(20).keys()].map(idx => {
-    return {
-      key: idx,
-      uuid: idx,
-      author: 'Admin',
-      metrics: [
-        {
-          name: 'runtime',
-          value: idx,
-        },
-      ],
-      parameters: [
-        {
-          name: `parameter ${idx}`,
-          value: `value ${idx}`,
-        },
-      ],
-      measurements: [],
-    };
+  useEffect(() => {
+    if (items.length === 0) getRuns();
   });
 
   return (
     <div>
-      <Table columns={columns} dataSource={data} />
+      <Table
+        loading={loading}
+        columns={columns}
+        dataSource={items}
+        onChange={p => setPage(p)}
+        defaultCurrent={1}
+        current={page}
+        total={total}
+      />
     </div>
   );
 }
@@ -97,15 +101,26 @@ export function SharedRunsList() {
 SharedRunsList.propTypes = {
   // eslint-disable-next-line react/no-unused-prop-types
   dispatch: PropTypes.func.isRequired,
+  getRuns: PropTypes.func,
+  items: PropTypes.array,
+  total: PropTypes.number,
+  page: PropTypes.number,
+  loading: PropTypes.bool,
+  setPage: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
-  sharedRunsList: makeSelectSharedRunsList(),
+  items: makeSelectSharedRunsItems(),
+  total: makeSelectSharedRunsTotal(),
+  page: makeSelectSharedRunsPage(),
+  loading: makeSelectSharedRunsLoading(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
+    getRuns: () => dispatch(getRunsAction()),
+    setPage: page => dispatch(getRunsAction(page)),
   };
 }
 

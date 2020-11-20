@@ -12,6 +12,36 @@ const selectSharedRunsListDomain = state =>
  * Other specific selectors
  */
 
+const makeSelectSharedRunsItems = () =>
+  createSelector(
+    selectSharedRunsListDomain,
+    state => state.items,
+  );
+
+const makeSelectSharedRunsLoading = () =>
+  createSelector(
+    selectSharedRunsListDomain,
+    state => state.loading,
+  );
+
+const makeSelectSharedRunsPage = () =>
+  createSelector(
+    selectSharedRunsListDomain,
+    state => state.page,
+  );
+
+const makeSelectSharedRunsTotal = () =>
+  createSelector(
+    selectSharedRunsListDomain,
+    state => state.total,
+  );
+
+const makeSelectSharedFilder = () =>
+  createSelector(
+    selectSharedRunsListDomain,
+    state => state.filter,
+  );
+
 /**
  * Default selector used by SharedRunsList
  */
@@ -23,4 +53,11 @@ const makeSelectSharedRunsList = () =>
   );
 
 export default makeSelectSharedRunsList;
-export { selectSharedRunsListDomain };
+export {
+  selectSharedRunsListDomain,
+  makeSelectSharedRunsItems,
+  makeSelectSharedRunsLoading,
+  makeSelectSharedRunsPage,
+  makeSelectSharedRunsTotal,
+  makeSelectSharedFilder
+};
