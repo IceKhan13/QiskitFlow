@@ -66,14 +66,9 @@ function App({ user, loggedIn, logoutUser, getProfile }) {
           <Link to="/experiments">My experiments</Link>
         </Menu.Item>
         <SubMenu key="profile" icon={<UserOutlined />} title="Profile">
-          <Menu.Item key="profile">{`${user.username} profile`}</Menu.Item>
           <Menu.Item key="logout" onClick={logoutUser}>
             Logout
           </Menu.Item>
-        </SubMenu>
-        <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
-          <Menu.Item key="6">Team 1</Menu.Item>
-          <Menu.Item key="8">Team 2</Menu.Item>
         </SubMenu>
       </Menu>
     </Sider>
