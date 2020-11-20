@@ -65,7 +65,7 @@ function App({ user, loggedIn, logoutUser, getProfile }) {
         <Menu.Item key="experiments" icon={<DesktopOutlined />}>
           <Link to="/experiments">My experiments</Link>
         </Menu.Item>
-        <SubMenu key="profile" icon={<UserOutlined />} title="Profile">
+        <SubMenu key="profile" icon={<UserOutlined />} title={`${user.username}`}>
           <Menu.Item key="logout" onClick={logoutUser}>
             Logout
           </Menu.Item>
