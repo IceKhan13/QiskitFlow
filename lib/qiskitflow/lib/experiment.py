@@ -5,32 +5,36 @@ import shutil
 
 from typing import Optional, Union
 from qiskitflow.utils.constants import EXPERIMENTS_DIRECTORY
-from qiskitflow.lib.models import Metric, Parameter, Measurement
+from qiskitflow.lib.models import Metric, Parameter, Counts
+from qiskitflow.utils.utils import include_patterns
 
 
 class Experiment:
     def __init__(self,
                  name: str, 
-                 entrypoint: Optional[str] = None, 
+                 entrypoint: Optional[str] = None,
+                 sourcecode_dir: Optional[str] = None,
                  save_path: Optional[str] = None):
         """ Experiment.
         
         Args:
             name (str): name of experiment
             entrypoint (str): script that were used to run this experiment
+            sourcecode_dir (str): path to directory with sourcecode and entrypoint
             save_path (str): experiments save location
         """
         if not save_path:
             save_path = "./"
         self.save_path = save_path
         self.entrypoint = entrypoint
+        self.sourcecode_dir = sourcecode_dir
 
         self.name = name
         self.run_id = str(uuid.uuid4().hex)
 
         self.metrics = []
         self.parameters = []
-        self.measurements = []
+        self.counts = []
         self.state_vectors = []  # TODO: implement
 
     def __enter__(self):
@@ -47,9 +51,9 @@ class Experiment:
         """ Writes parameter to experiment run. """
         self.parameters.append(Parameter(parameter_name, parameter_value))
 
-    def write_measurement(self, name: str, measurement: dict):
-        """ Writes measurement to experiment run. """
-        self.measurements.append(Measurement(name, measurement))
+    def write_counts(self, name: str, counts: dict):
+        """ Writes meas counts to experiment run. """
+        self.counts.append(Counts(name, counts))
 
     def write_image(self, name: str, image_path: str):
         """ Writes image to experiment run. """
@@ -65,10 +69,9 @@ class Experiment:
         run_dir, sourcecode_directory = self._create_and_get_save_directory()
 
         # saving files
-        # TODO: limit copytree to specific filetypes (.py, Docker, requirements.txt, etc)
-        if self.entrypoint and os.path.isdir(self.save_path):
-            shutil.copytree(self.save_path, sourcecode_directory,
-                            ignore=shutil.ignore_patterns(EXPERIMENTS_DIRECTORY))
+        if self.entrypoint and os.path.isdir(self.sourcecode_dir):
+            shutil.copytree(self.sourcecode_dir, sourcecode_directory,
+                            ignore=include_patterns("*.py", "*.ipynb", "requirements.txt"))
 
         with open("{}/run.json".format(run_dir), "w") as f:
             json.dump(self.__dict__(), f)
@@ -89,14 +92,14 @@ class Experiment:
             for p in run_data["parameters"]:
                 parameters.append(Parameter(p["name"], p["value"]))
 
-            measurements = []
-            for meas in run_data["measurements"]:
-                measurements.append(Measurement(meas["name"],
-                                                meas["value"]))
+            counts = []
+            for cnt in run_data["counts"]:
+                counts.append(Counts(cnt["name"],
+                                     cnt["value"]))
 
             exp.metrics = metrics
             exp.parameters = parameters
-            exp.measurements = measurements
+            exp.counts = counts
 
             # TODO: state vector
             return exp
@@ -117,7 +120,7 @@ class Experiment:
             "run_id": self.run_id,
             "metrics": [m.__dict__() for m in self.metrics],
             "parameters": [p.__dict__() for p in self.parameters],
-            "measurements": [m.__dict__() for m in self.measurements],
+            "counts": [c.__dict__() for c in self.counts],
             "entrypoint": self.entrypoint
         }
 

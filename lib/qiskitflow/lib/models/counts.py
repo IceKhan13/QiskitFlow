@@ -1,7 +1,7 @@
 from typing import Dict
 
 
-class Measurement:
+class Counts:
     def __init__(self, name: str, value: Dict[str, int]):
         """ Experiment measurement.
 
@@ -18,7 +18,7 @@ class Measurement:
             "value": self.value
         }
 
-    def __eq__(self, other: 'Measurement'):
+    def __eq__(self, other: 'Counts'):
         return self.name == other.name and self.value == other.value
 
     def __repr__(self):

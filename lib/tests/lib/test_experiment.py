@@ -27,7 +27,7 @@ class TestExperiment(unittest.TestCase):
             exp.write_parameter("test parameter", "test parameter value")
             exp.write_parameter("test parameter 2", "test paraeter value 2")
 
-            exp.write_measurement("measurement", {"00": 1024, "11": 0})
+            exp.write_counts("counts", {"00": 1024, "11": 0})
 
             run_id = exp.run_id
 
@@ -39,11 +39,11 @@ class TestExperiment(unittest.TestCase):
 
         self.assertEqual(len(restored.metrics), len(exp.metrics))
         self.assertEqual(len(restored.parameters), len(exp.parameters))
-        self.assertEqual(len(restored.measurements), len(exp.measurements))
+        self.assertEqual(len(restored.counts), len(exp.counts))
 
         self.assertEqual(restored.metrics, exp.metrics)
         self.assertEqual(restored.parameters, exp.parameters)
-        self.assertEqual(restored.measurements, exp.measurements)
+        self.assertEqual(restored.counts, exp.counts)
 
     def test_sourcecode_save(self):
         """ Tests saving of sourecode files. """
@@ -51,10 +51,16 @@ class TestExperiment(unittest.TestCase):
 
         with Experiment("test experiment",
                         entrypoint="entrypoint_example.py",
-                        save_path=self.resources_dir) as exp:
+                        save_path=self.resources_dir,
+                        sourcecode_dir=self.resources_dir) as exp:
             run_id = exp.run_id
 
         self.assertTrue(os.path.isfile("{}/../resources/{}/test experiment/{}/sourcecode/"
                                        "entrypoint_example.py".format(self.resources_dir,
                                                                       EXPERIMENTS_DIRECTORY,
                                                                       run_id)))
+        # should skip non pythonic files
+        self.assertFalse(os.path.isfile("{}/../resources/{}/test experiment/{}/sourcecode/"
+                                        "otherfile.txt".format(self.resources_dir,
+                                                               EXPERIMENTS_DIRECTORY,
+                                                               run_id)))
