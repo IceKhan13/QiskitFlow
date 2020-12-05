@@ -1,12 +1,12 @@
 from rest_framework import serializers
 
-from .models import Measurement, MeasurementEntry, Metric, Parameter, Run, Experiment
+from .models import Count, CountEntry, Metric, Parameter, Run, Experiment
 
 
 class MeasurementEntrySerializer(serializers.ModelSerializer):
     """ Serializer for measurement entry. """
     class Meta:
-        model = MeasurementEntry
+        model = CountEntry
         fields = '__all__'
 
 
@@ -15,7 +15,7 @@ class MeasurementSerializer(serializers.ModelSerializer):
     entries = MeasurementEntrySerializer(many=True)
 
     class Meta:
-        model = Measurement
+        model = Count
         fields = '__all__'
 
 

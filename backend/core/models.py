@@ -60,18 +60,18 @@ class Parameter(models.Model):
         return "{}:{}".format(self.name, self.value)
 
 
-class Measurement(models.Model):
+class Count(models.Model):
     """ Base class for logged measurement. """
     run = models.ForeignKey(Run,
                             on_delete=models.CASCADE,
                             related_name='measurements')
 
 
-class MeasurementEntry(models.Model):
+class CountEntry(models.Model):
     """ Class for measurement entry. """
     key = models.CharField(max_length=255)
     value = models.FloatField()
 
-    measurement = models.ForeignKey(Measurement,
+    measurement = models.ForeignKey(Count,
                                     on_delete=models.CASCADE,
                                     related_name='entries')

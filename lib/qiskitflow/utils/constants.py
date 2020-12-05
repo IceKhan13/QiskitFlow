@@ -1,2 +1,4 @@
 EXPERIMENTS_DIRECTORY = "_experiments"
 PAGINATION_SIZE = 10
+DEFAULT_HOST = "http://localhost"
+DEFAULT_PORT = 8000

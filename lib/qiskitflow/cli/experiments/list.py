@@ -6,6 +6,11 @@ from qiskitflow.utils.constants import EXPERIMENTS_DIRECTORY
 
 
 def experiments_list():
+    """ Paginated list of experiment runs
+
+    Returns:
+        list of experiments
+    """
     experiment_runs_counter = {}
     for path in glob.glob("{}/**/**/run.json".format(EXPERIMENTS_DIRECTORY)):
         _, experiment_name, _, _ = path.split("/")

@@ -183,7 +183,7 @@ class Experiment:
             parameters.append(Parameter(p["name"], p["value"]))
 
         measurements = []
-        for meas in run_data["measurements"]:
+        for meas in run_data["counts"]:
             measurements.append(Measurement(meas["name"],
                                             meas["value"]))
 
