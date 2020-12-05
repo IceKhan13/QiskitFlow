@@ -69,7 +69,7 @@ class Experiment:
         run_dir, sourcecode_directory = self._create_and_get_save_directory()
 
         # saving files
-        if self.entrypoint and os.path.isdir(self.sourcecode_dir):
+        if self.entrypoint and self.sourcecode_dir and os.path.isdir(self.sourcecode_dir):
             shutil.copytree(self.sourcecode_dir, sourcecode_directory,
                             ignore=include_patterns("*.py", "*.ipynb", "requirements.txt"))
 

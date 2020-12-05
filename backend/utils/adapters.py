@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 
 from common.models import Experiment as ExperimentClass
-from core.models import Experiment, Run, Metric, Measurement, MeasurementEntry, Parameter
+from core.models import Experiment, Run, Metric, Count, CountEntry, Parameter
 
 
 class ObjectToModelAdapter:
@@ -23,10 +23,10 @@ class ObjectToModelAdapter:
             parameter.save()
 
         for m in experiment_run.measurements:
-            measurement = Measurement(run=run)
+            measurement = Count(run=run)
             measurement.save()
             for entry_key, entry_value in m.value.items():
-                entry = MeasurementEntry(key=entry_key, value=entry_value, measurement=measurement)
+                entry = CountEntry(key=entry_key, value=entry_value, measurement=measurement)
                 entry.save()
 
         return experiment

@@ -7,7 +7,7 @@ from rest_framework.test import APIRequestFactory, force_authenticate
 
 from core.views import ExperimentViewSet
 from core.models import (Experiment, Run, Metric, Parameter,
-                         Measurement, MeasurementEntry)
+                         Count, CountEntry)
 
 
 def _create_stubbed_experiments(n_experiments: int,
@@ -38,10 +38,10 @@ def _create_stubbed_experiments(n_experiments: int,
                 parameter.save()
 
             for m in range(n_measurements):
-                measurement = Measurement(run=run)
+                measurement = Count(run=run)
                 measurement.save()
 
-                measurement_entry = MeasurementEntry(key="00", value=1024, measurement=measurement)
+                measurement_entry = CountEntry(key="00", value=1024, measurement=measurement)
                 measurement_entry.save()
 
             run.save()
@@ -95,7 +95,7 @@ class CoreApiTestCase(TestCase):
                 {"name": "test parameter", "value": "test parameter value"},
                 {"name": "test parameter 2", "value": "test paraeter value 2"}
             ],
-            "measurements": [
+            "counts": [
                 {"name": "measurement", "value": {"00": 1024, "11": 0}}
             ],
             "entrypoint": None
