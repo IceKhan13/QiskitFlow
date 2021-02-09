@@ -1,7 +1,7 @@
 QiskitFlow. Reproducible quantum experiments.
 =============================================
 
-![logo](./docs/images/qiskitflowlogo.gif)
+![logo](./docs/images/logo-updated.gif)
 
 Platform for tracking, sharing and running quantum experiments in a clean and understandable for developers, researchers and students manner.
 
