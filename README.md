@@ -9,30 +9,19 @@ Platform for tracking, sharing and running quantum experiments in a clean and un
 > Files from hackathon project are located in [hackathon folder](./hackathon)
 
 * [General overview](#general-overview)
-* [Deployment](#deployment-options)
 * [Screenshots](#screenshots)
-* [How to run](#how-to-run)
 
 ### General overview
 
-![overview](./docs/images/execution.png)
-
-### Deployment options
-
-![deployment](./docs/images/deploy.png)
+![flow](./docs/images/workflow.png)
 
 ### Screenshots
 
-#### UI (experiments)
-![ui](./docs/images/ui.png)
+#### UI 
+![ui](./docs/images/ui-updated.png)
 
 
-#### UI (run)
-![detail](./docs/images/detail.png)
+#### CLI / Lib
 
-#### CLI
-![cli](./docs/images/console.png)
-
-#### Lib / annotation
-![annotation](./docs/images/annotation.png)
+Screenshots/documentation for CLI and library is in [lib folder](./lib)
 
