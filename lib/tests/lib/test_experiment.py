@@ -45,6 +45,18 @@ class TestExperiment(unittest.TestCase):
         self.assertEqual(restored.parameters, exp.parameters)
         self.assertEqual(restored.counts, exp.counts)
 
+    def test_artifact_save(self):
+        """ Tests saving artifacts. """
+        run_id = None
+        with Experiment("artifact saving experiment", save_path=self.resources_dir) as exp:
+            exp.write_artifact("artifact", "{}/artifact.txt".format(self.resources_dir))
+            run_id = exp.run_id
+
+        self.assertTrue(os.path.isfile("{}/../resources/{}/artifact saving experiment/{}/"
+                                       "artifact.txt".format(self.resources_dir,
+                                                             EXPERIMENTS_DIRECTORY,
+                                                             run_id)))
+
     def test_sourcecode_save(self):
         """ Tests saving of sourecode files. """
         run_id = None
