@@ -1,8 +1,9 @@
 import glob
 import click
+import os
 from tabulate import tabulate
 
-from qiskitflow.utils.constants import EXPERIMENTS_DIRECTORY
+from qiskitflow.utils.constants import EXPERIMENTS_DIRECTORY, PAGINATION_SIZE
 
 
 def experiments_list():
@@ -11,18 +12,22 @@ def experiments_list():
     Returns:
         list of experiments
     """
-    experiment_runs_counter = {}
-    for path in glob.glob("{}/**/**/run.json".format(EXPERIMENTS_DIRECTORY)):
+    click.echo(click.style("Experiments list\n", fg='magenta'))
+
+    experiments = glob.glob("{}/**/**/run.json".format(EXPERIMENTS_DIRECTORY))
+    experiments.sort(key=os.path.getctime, reverse=True)
+
+    experiment_runs = {}
+    for path in experiments:
         _, experiment_name, _, _ = path.split("/")
-        if experiment_name not in experiment_runs_counter.keys():
-            experiment_runs_counter[experiment_name] = 1
+        if experiment_name not in experiment_runs.keys():
+            experiment_runs[experiment_name] = 1
         else:
-            experiment_runs_counter[experiment_name] += 1
+            experiment_runs[experiment_name] += 1
 
-    table = []
-    for experiment_name, number_of_runs in experiment_runs_counter.items():
-        table.append([experiment_name, number_of_runs])
-
-    headers = ["Experiment", "# runs"]
-    click.echo(click.style(tabulate(table, headers, tablefmt='grid'), fg='white'))
-
+    header = ["Name", "# of runs"]
+    for i in range(0, len(experiment_runs), PAGINATION_SIZE):
+        if i != 0:
+            click.confirm("Next page?", abort=True)
+        table = list(experiment_runs.items())[i: i + PAGINATION_SIZE]
+        click.echo(click.style(tabulate(table, header, tablefmt='grid'), fg='white'))

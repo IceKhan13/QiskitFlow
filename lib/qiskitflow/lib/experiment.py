@@ -1,5 +1,7 @@
+import sys
 import uuid
 import os
+import math
 import json
 import shutil
 import time
@@ -8,6 +10,7 @@ from typing import Optional, Union
 from qiskitflow.utils.constants import EXPERIMENTS_DIRECTORY
 from qiskitflow.lib.models import Metric, Parameter, Count, Artifact
 from qiskitflow.utils.utils import include_patterns
+from qiskitflow._version import __version__
 
 
 class Experiment:
@@ -41,6 +44,8 @@ class Experiment:
         self.artifacts = set()
 
         self.timestamp = int(time.time())
+
+        self.version = __version__
 
     def __enter__(self):
         return self
@@ -94,7 +99,13 @@ class Experiment:
         with open(path, "r") as f:
             run_data = json.load(f)
             exp = Experiment(run_data["name"], entrypoint=run_data["entrypoint"])
-            
+
+            version = run_data.get("version")
+            exp.version = version
+
+            run_id = run_data.get("run_id")
+            exp.run_id = run_id
+
             metrics = []
             for m in run_data["metrics"]:
                 metrics.append(Metric(m["name"], m["value"]))
@@ -132,6 +143,7 @@ class Experiment:
 
     def __dict__(self):
         return {
+            "version": self.version,
             "name": self.name,
             "run_id": self.run_id,
             "metrics": [m.__dict__() for m in self.metrics],
@@ -143,3 +155,8 @@ class Experiment:
 
     def __repr__(self):
         return 'Experiment {} (run: {})'.format(self.name, self.run_id)
+
+    def get_metric(self, name: str) -> Union[float, int]:
+        """ Returns metric value. """
+        metrics = {m.name: m.value for m in self.metrics}
+        return metrics.get(name, sys.maxsize)
