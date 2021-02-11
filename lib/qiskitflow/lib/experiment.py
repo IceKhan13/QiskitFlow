@@ -1,12 +1,16 @@
+import sys
 import uuid
 import os
+import math
 import json
 import shutil
+import time
 
 from typing import Optional, Union
 from qiskitflow.utils.constants import EXPERIMENTS_DIRECTORY
-from qiskitflow.lib.models import Metric, Parameter, Counts
+from qiskitflow.lib.models import Metric, Parameter, Count, Artifact
 from qiskitflow.utils.utils import include_patterns
+from qiskitflow._version import __version__
 
 
 class Experiment:
@@ -37,6 +41,12 @@ class Experiment:
         self.counts = []
         self.state_vectors = []  # TODO: implement
 
+        self.artifacts = set()
+
+        self.timestamp = int(time.time())
+
+        self.version = __version__
+
     def __enter__(self):
         return self
 
@@ -53,12 +63,15 @@ class Experiment:
 
     def write_counts(self, name: str, counts: dict):
         """ Writes meas counts to experiment run. """
-        self.counts.append(Counts(name, counts))
+        self.counts.append(Count(name, counts))
 
     def write_image(self, name: str, image_path: str):
         """ Writes image to experiment run. """
-        # TODO: implement
-        raise NotImplementedError("We are working on this!")
+        self.write_artifact(name, image_path)
+
+    def write_artifact(self, name: str, path: str):
+        """ Write artifact to experiment run. """
+        self.artifacts.add(Artifact(name, path))
 
     def set_run(self, run_id: str):
         """ Set run id for experiment. """
@@ -73,6 +86,9 @@ class Experiment:
             shutil.copytree(self.sourcecode_dir, sourcecode_directory,
                             ignore=include_patterns("*.py", "*.ipynb", "requirements.txt"))
 
+        for art in self.artifacts:
+            art.save(run_dir)
+
         with open("{}/run.json".format(run_dir), "w") as f:
             json.dump(self.__dict__(), f)
         return self.run_id
@@ -83,7 +99,13 @@ class Experiment:
         with open(path, "r") as f:
             run_data = json.load(f)
             exp = Experiment(run_data["name"], entrypoint=run_data["entrypoint"])
-            
+
+            version = run_data.get("version")
+            exp.version = version
+
+            run_id = run_data.get("run_id")
+            exp.run_id = run_id
+
             metrics = []
             for m in run_data["metrics"]:
                 metrics.append(Metric(m["name"], m["value"]))
@@ -94,12 +116,17 @@ class Experiment:
 
             counts = []
             for cnt in run_data["counts"]:
-                counts.append(Counts(cnt["name"],
-                                     cnt["value"]))
+                counts.append(Count(cnt["name"],
+                                    cnt["value"]))
+
+            artifacts = set()
+            for art in run_data.get("artifacts", []):
+                artifacts.add(Artifact(art.get("name"), art.get("path")))
 
             exp.metrics = metrics
             exp.parameters = parameters
             exp.counts = counts
+            exp.artifacts = artifacts
 
             # TODO: state vector
             return exp
@@ -116,13 +143,20 @@ class Experiment:
 
     def __dict__(self):
         return {
+            "version": self.version,
             "name": self.name,
             "run_id": self.run_id,
             "metrics": [m.__dict__() for m in self.metrics],
             "parameters": [p.__dict__() for p in self.parameters],
             "counts": [c.__dict__() for c in self.counts],
+            "artifacts": [a.__dict__() for a in self.artifacts],
             "entrypoint": self.entrypoint
         }
 
     def __repr__(self):
         return 'Experiment {} (run: {})'.format(self.name, self.run_id)
+
+    def get_metric(self, name: str) -> Union[float, int]:
+        """ Returns metric value. """
+        metrics = {m.name: m.value for m in self.metrics}
+        return metrics.get(name, sys.maxsize)

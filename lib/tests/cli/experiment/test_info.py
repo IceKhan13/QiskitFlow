@@ -41,5 +41,5 @@ class TestCLIExperimentInfo(unittest.TestCase):
                                                           "--parameters=parameter,other parameter"])
 
             self.assertEqual(result.exit_code, 0)
-            self.assertTrue("M[metric]" in result.output)
+            self.assertTrue("Metric[metric]" in result.output)
             self.assertFalse("other metric" in result.output)

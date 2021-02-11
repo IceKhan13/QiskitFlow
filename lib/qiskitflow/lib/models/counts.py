@@ -1,7 +1,9 @@
 from typing import Dict
 
+import time
 
-class Counts:
+
+class Count:
     def __init__(self, name: str, value: Dict[str, int]):
         """ Experiment measurement.
 
@@ -11,6 +13,7 @@ class Counts:
         """
         self.name = name
         self.value = value
+        self.timestamp = int(time.time())
 
     def __dict__(self):
         return {
@@ -22,4 +25,4 @@ class Counts:
         return self.name == other.name and self.value == other.value
 
     def __repr__(self):
-        return "Measurement({}: {})".format(self.name, self.value)
+        return "{}: {}".format(self.name, self.value)

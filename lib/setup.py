@@ -3,8 +3,8 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-with open("version", "r") as f:
-    version = f.read()
+with open("qiskitflow/_version.py") as f:
+    version = f.readlines()[-1].split()[-1].strip("\"'")
 
 setuptools.setup(
     name="qiskitflow",

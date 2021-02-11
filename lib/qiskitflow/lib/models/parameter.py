@@ -1,5 +1,7 @@
 from typing import Union
 
+import time
+
 
 class Parameter:
     def __init__(self, name: str, value: Union[str, float, int]):
@@ -11,15 +13,17 @@ class Parameter:
         """
         self.name = name
         self.value = value
+        self.timestamp = int(time.time())
 
     def __dict__(self):
         return {
             "name": self.name,
-            "value": self.value
+            "value": self.value,
+            "timestamp": self.timestamp
         }
 
     def __eq__(self, other: 'Parameter'):
         return self.name == other.name and self.value == other.value
 
     def __repr__(self):
-        return "Parameter({}:{})".format(self.name, self.value)
+        return "{}:{}".format(self.name, self.value)
