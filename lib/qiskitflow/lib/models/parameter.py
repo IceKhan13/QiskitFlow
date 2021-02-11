@@ -26,4 +26,4 @@ class Parameter:
         return self.name == other.name and self.value == other.value
 
     def __repr__(self):
-        return "Parameter({}:{})".format(self.name, self.value)
+        return "{}:{}".format(self.name, self.value)

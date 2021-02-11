@@ -22,10 +22,11 @@ def experiments():
 @click.argument("name")
 @click.option("--metrics", default="")
 @click.option("--parameters", default="")
+@click.option("--counts", default="")
 @click.option("--order_by", default="")
 @click.option("--order_type", default="asc")
-def experiment_info(name, metrics, parameters, order_by, order_type):
-    ex_info(name.strip(), metrics, parameters, order_by.strip(), order_type.strip())
+def experiment_info(name, metrics, parameters, counts, order_by, order_type):
+    ex_info(name.strip(), metrics, parameters, counts, order_by.strip(), order_type.strip())
 
 
 @experiments.command("list")

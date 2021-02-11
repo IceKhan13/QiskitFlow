@@ -13,7 +13,7 @@ Platform for tracking, sharing and running quantum experiments in a clean and un
 
 ### General overview
 
-![flow](./docs/images/workflow.png)
+![flow](./docs/images/flow.png)
 
 ### Screenshots
 

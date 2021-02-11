@@ -25,4 +25,4 @@ class Count:
         return self.name == other.name and self.value == other.value
 
     def __repr__(self):
-        return "Count({}: {})".format(self.name, self.value)
+        return "{}: {}".format(self.name, self.value)

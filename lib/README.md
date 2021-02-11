@@ -8,16 +8,17 @@ QiskitFlow library
 * [CLI](#cli)
   * [Experiments list](#list-of-experiments)
   * [Experiment information](#experiment-information-runs)
-  * [Share experiment](#share-experiment)
 
 
 ### Flow
+
+![flow](../docs/images/flow.png)
 
 Flow of actions while using QiskitFlow is following:
 - [Install](#installation) QiskitFlow if not installed yet
 - [Annotate](#code-annotation) your code with `Experiment` abstraction QiskitFlow library provides
 - Run your code as usual: QiskitFlow will write metadata of your experiment execution in local folder 
-- You can review and share experiments using [CLI interface](#cli)
+- You can review experiments using [CLI interface](#cli)
 
 > We are tracking metrics, parameters and measurements of experiments. 
 > Artifacts, circuits, sourcecode and other useful things are on their way.
@@ -81,26 +82,8 @@ Experiment information
 ![info](./docs/images/info.png)
 
 Experiment with specified optional flags
-![info with flags](./docs/images/info%20with%20args.png)
+![info with flags](./docs/images/info-with-args.png)
 
 </p>
 </details>
-
-
-
-
-#### Share experiment
-```shell
-qiskitflow experiments share <NAME_OF_EXPERIMENT> <RUN_ID> --username=<YOUR_USERNAME> --password=<YOUR_PASSWORD>
-```
-
-<details><summary>experiment sharing screenshot</summary>
-<p>
-
-![share](./docs/images/share.png)
-
-</p>
-</details>
-
-
 

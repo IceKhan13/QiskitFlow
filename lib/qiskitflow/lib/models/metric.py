@@ -27,6 +27,6 @@ class Metric:
         return self.name == other.name and self.value == other.value
 
     def __repr__(self):
-        return "Metric({}:{})".format(self.name, self.value)
+        return "{}:{}".format(self.name, self.value)
 
 
