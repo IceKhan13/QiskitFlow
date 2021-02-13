@@ -1,5 +1,17 @@
-QiskitFlow library
-==================
+QiskitFlow. Reproducible quantum experiments.
+=============================================
+
+![logo](https://raw.githubusercontent.com/IceKhan13/QiskitFlow/master/docs/images/logo-updated.gif)
+
+Platform for tracking, sharing and running quantum experiments in a clean and understandable for developers, researchers and students manner.
+
+> Alpha release is in the works. 
+> Files from hackathon project are located in [hackathon folder](./hackathon)
+
+### General overview
+
+![flow](https://raw.githubusercontent.com/IceKhan13/QiskitFlow/master/docs/images/flow.png)
+
 
 ### Hot to run
 * [Overview / Flow](#flow)
@@ -9,10 +21,9 @@ QiskitFlow library
   * [Experiments list](#list-of-experiments)
   * [Experiment information](#experiment-information-runs)
 * [Examples](#examples)
+* [UI Mocks](#mocks-of-upcoming-ui)
 
 ### Flow
-
-![flow](../docs/images/flow.png)
 
 Flow of actions while using QiskitFlow is following:
 - [Install](#installation) QiskitFlow if not installed yet
@@ -126,7 +137,7 @@ qiskitflow experiments list
 <details><summary>experiments list screenshot</summary>
 <p>
 
-![list](./docs/images/list.png)
+![list](https://github.com/IceKhan13/QiskitFlow/blob/master/lib/docs/images/list.png?raw=true)
 
 </p>
 </details>
@@ -141,10 +152,10 @@ qiskitflow experiments info <NAME_OF_EXPERIMENT> --metrics="<METRIC_NAME>,<OTHER
 <p>
 
 Experiment information
-![info](./docs/images/info.png)
+![info](https://github.com/IceKhan13/QiskitFlow/blob/master/lib/docs/images/info.png?raw=true)
 
 Experiment with specified optional flags
-![info with flags](./docs/images/info-with-args.png)
+![info with flags](https://github.com/IceKhan13/QiskitFlow/blob/master/lib/docs/images/info-with-args.png?raw=true)
 
 </p>
 </details>
@@ -153,4 +164,17 @@ Experiment with specified optional flags
 
 ### Examples
 
-[Jupyter notebook with quantum teleportation example](./docs/examples/example.ipynb)
+[Jupyter notebook with quantum teleportation example](lib/docs/examples/example.ipynb)
+
+
+### Mocks of upcoming UI
+
+<details><summary>UI mocks</summary>
+<p>
+
+Experiment information
+![ui](https://github.com/IceKhan13/QiskitFlow/blob/master/docs/images/ui-updated.png?raw=true)
+
+
+</p>
+</details>
