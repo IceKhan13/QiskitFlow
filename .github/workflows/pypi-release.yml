@@ -26,12 +26,12 @@ jobs:
         setuptools wheel
     - name: Set version for release
       run: >-
-        cd qiskitflow && rm _version.py &&
+        cd lib/qiskitflow && rm _version.py &&
         echo  __version__ = \"$release_version\" >> _version.py &&
         echo $release_version
     - name: Build a binary wheel and a source tarball
       run: >-
-        cd .. && python
+        cd lib && python
         setup.py
         sdist bdist_wheel
     - name: Publish distribution 📦 to PyPI
