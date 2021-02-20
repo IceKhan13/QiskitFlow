@@ -3,7 +3,7 @@ import time
 from typing import List, Optional
 
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import TestCase, LiveServerTestCase
 from rest_framework.test import APIRequestFactory, force_authenticate
 
 from core.views import ExperimentViewSet, RunViewSet
@@ -53,7 +53,7 @@ def _create_stubbed_experiments(n_experiments: int,
     return experiments
 
 
-class CoreApiTestCase(TestCase):
+class CoreApiTestCase(LiveServerTestCase):
     """ Tests core module views. """
     def setUp(self) -> None:
         self.factory = APIRequestFactory()
