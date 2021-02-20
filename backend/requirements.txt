@@ -16,7 +16,7 @@ Jinja2==2.11.2
 MarkupSafe==1.1.1
 openapi-codec==1.3.2
 packaging==20.4
-psycopg2 @ file:///opt/concourse/worker/volumes/live/ad0d2468-72e7-4502-526f-2fd0ec5d33ff/volume/psycopg2_1612298588979/work
+psycopg2-binary==2.8.6
 PyJWT==1.7.1
 pyparsing==2.4.7
 pytz==2020.1
