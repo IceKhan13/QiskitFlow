@@ -28,7 +28,9 @@ jobs:
       with:
         postgresql version: '11'
     - name: Run migrations
-      run: python manage.py migrate
+      run: |
+        cd backend
+        python manage.py migrate
     - name: Run tests
       run: |
         cd backend
