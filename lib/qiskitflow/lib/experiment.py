@@ -47,6 +47,8 @@ class Experiment:
 
         self.version = __version__
 
+        self.timestamp = int(time.time())
+
     def __enter__(self):
         return self
 
@@ -127,6 +129,7 @@ class Experiment:
             exp.parameters = parameters
             exp.counts = counts
             exp.artifacts = artifacts
+            exp.timestamp = run_data.get("timestamp", exp.timestamp)
 
             # TODO: state vector
             return exp
@@ -150,7 +153,8 @@ class Experiment:
             "parameters": [p.__dict__() for p in self.parameters],
             "counts": [c.__dict__() for c in self.counts],
             "artifacts": [a.__dict__() for a in self.artifacts],
-            "entrypoint": self.entrypoint
+            "entrypoint": self.entrypoint,
+            "timestamp": self.timestamp
         }
 
     def __repr__(self):
