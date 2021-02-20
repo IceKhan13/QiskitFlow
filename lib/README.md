@@ -18,8 +18,8 @@ Platform for tracking, sharing and running quantum experiments in a clean and un
 * [Installation](#installation)
 * [Code annotation](#code-annotation)
 * [CLI](#cli)
-  * [Experiments list](#list-of-experiments)
-  * [Experiment information](#experiment-information-runs)
+  * [Experiment runs list](#list-of-experiment-runs)
+  * [Experiment run information](#experiment-run-information)
 * [Examples](#examples)
 * [UI Mocks](#mocks-of-upcoming-ui)
 
@@ -129,33 +129,30 @@ with Experiment("quantum teleportation") as experiment:
 ### CLI
 
 
-#### List of experiments
+#### List of experiment runs
 ```shell
-qiskitflow experiments list
+qiskitflow runs [--search=<SEARCH_BY_RUN_ID>] [--experiment=<EXPERIMENT_NAME>] [--order_by=<METRIC_TO_ORDER_BY>] [--order_type=<asc or desc>]
 ```
 
 <details><summary>experiments list screenshot</summary>
 <p>
 
-![list](https://github.com/IceKhan13/QiskitFlow/blob/master/lib/docs/images/list.png?raw=true)
+![list](https://github.com/IceKhan13/QiskitFlow/blob/master/lib/docs/images/runs.png?raw=true)
 
 </p>
 </details>
 
 
-#### Experiment information (runs)
+#### Experiment run information
 ```shell
-qiskitflow experiments info <NAME_OF_EXPERIMENT> --metrics="<METRIC_NAME>,<OTHER_METRIC_NAME>" --parameters="<PARAM>,<OTHER PARAM>"
+qiskitflow run <RUN_ID>
 ```
 
 <details><summary>experiment information screenshots</summary>
 <p>
 
 Experiment information
-![info](https://github.com/IceKhan13/QiskitFlow/blob/master/lib/docs/images/info.png?raw=true)
-
-Experiment with specified optional flags
-![info with flags](https://github.com/IceKhan13/QiskitFlow/blob/master/lib/docs/images/info-with-args.png?raw=true)
+![info](https://github.com/IceKhan13/QiskitFlow/blob/master/lib/docs/images/run_detailed.png?raw=true)
 
 </p>
 </details>
@@ -164,7 +161,7 @@ Experiment with specified optional flags
 
 ### Examples
 
-[Jupyter notebook with quantum teleportation example](lib/docs/examples/example.ipynb)
+[Jupyter notebook with quantum teleportation example](https://github.com/IceKhan13/QiskitFlow/blob/master/docs/examples/example.ipynb)
 
 
 ### Mocks of upcoming UI
