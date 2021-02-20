@@ -1,32 +1,42 @@
+import time
 from django.contrib.auth.models import User
 
-from common.models import Experiment as ExperimentClass
 from core.models import Experiment, Run, Metric, Count, CountEntry, Parameter
 
 
-class ObjectToModelAdapter:
-    """ General adapter class to convert lib objects to Django models. """
+class RequestToModelAdapter:
+    """ Adapter class for converting request json to Django model. """
     @classmethod
-    def run(cls, experiment_run: ExperimentClass, author: User) -> Experiment:
-        experiment, created = Experiment.objects.get_or_create(name=experiment_run.name,
+    def adapt_run_from_request(cls, request: dict, author: User) -> Run:
+        experiment_name = request.get("name")
+        experiment, created = Experiment.objects.get_or_create(name=experiment_name,
                                                                author=author)
         experiment.save()
-        run = Run(uuid=experiment_run.run_id, experiment=experiment)
+
+        run_id = request.get("run_id")
+        run = Run(run_id=run_id, experiment=experiment, timestamp=request.get("timestamp", int(time.time())))
         run.save()
 
-        for m in experiment_run.metrics:
-            metric = Metric(name=m.name, value=m.value, run=run)
+        for m in request.get("metrics", []):
+            metric = Metric(name=m.get("name"),
+                            value=m.get("value"),
+                            timestamp=m.get("timestamp"),
+                            run=run)
             metric.save()
 
-        for p in experiment_run.parameters:
-            parameter = Parameter(name=p.name, value=p.value, run=run)
+        for p in request.get("paramters", []):
+            parameter = Parameter(name=p.get("name"),
+                                  value=p.get("value"),
+                                  timestamp=p.get("timestamp"),
+                                  run=run)
             parameter.save()
 
-        for m in experiment_run.measurements:
-            measurement = Count(run=run)
-            measurement.save()
-            for entry_key, entry_value in m.value.items():
-                entry = CountEntry(key=entry_key, value=entry_value, measurement=measurement)
-                entry.save()
+        for c in request.get("counts", []):
+            count = Count(name=c.get("name"), run=run)
+            count.save()
 
-        return experiment
+            for k, v in c.get("value", {}).items():
+                count_entry = CountEntry(key=k, value=v, count=count)
+                count_entry.save()
+
+        return run

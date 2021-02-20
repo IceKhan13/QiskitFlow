@@ -1,0 +1,11 @@
+version: "3.6"
+services:
+  db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: qiskitflow
+      POSTGRES_DB: qiskitflow
+    ports:
+    - 5432:5432
