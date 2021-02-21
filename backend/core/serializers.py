@@ -3,16 +3,16 @@ from rest_framework import serializers
 from .models import Count, CountEntry, Metric, Parameter, Run, Experiment
 
 
-class MeasurementEntrySerializer(serializers.ModelSerializer):
+class CountEntrySerializer(serializers.ModelSerializer):
     """ Serializer for measurement entry. """
     class Meta:
         model = CountEntry
         fields = '__all__'
 
 
-class MeasurementSerializer(serializers.ModelSerializer):
+class CountSerializer(serializers.ModelSerializer):
     """ Serializer for measurement. """
-    entries = MeasurementEntrySerializer(many=True)
+    entries = CountEntrySerializer(many=True)
 
     class Meta:
         model = Count
@@ -38,7 +38,7 @@ class RunSerializer(serializers.ModelSerializer):
 
     metrics = MetricSerializer(many=True)
     parameters = ParameterSerializer(many=True)
-    measurements = MeasurementSerializer(many=True)
+    counts = CountSerializer(many=True)
 
     class Meta:
         model = Run
@@ -51,4 +51,4 @@ class ExperimentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Experiment
-        fields = '__all__'
+        fields = ['runs', "name"]
