@@ -20,11 +20,11 @@ export function defaultAction() {
   };
 }
 
-export function updateExperimentsAction({ items, total, page }) {
+export function updateExperimentsAction({ results, count, page }) {
   return {
     type: UPDATE_EXPERIMENTS,
-    items,
-    total,
+    results,
+    count,
     page,
   };
 }

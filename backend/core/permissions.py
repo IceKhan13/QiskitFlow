@@ -10,4 +10,4 @@ class UserExperimentPermission(BasePermission):
 class UserRunPermission(BasePermission):
     """ Permission for only author to access experiment runs. """
     def has_object_permission(self, request, view, obj):
-        return request.user == obj.experiment.author
+        return request.user == obj.experiment.author or obj.is_public

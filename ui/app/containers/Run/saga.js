@@ -1,22 +1,31 @@
 import { call, select, put, takeLatest } from 'redux-saga/effects';
 import request from 'utils/request';
+import getBaseUrl from 'utils/urls';
 
-import { repoLoadingError } from 'containers/App/actions';
+import { repoLoadingError, logoutAction } from 'containers/App/actions';
 import { GET_RUN } from './constants';
 import { makeSelectRunId } from './selectors';
 import { updateRunAction } from './actions';
 
 export function* getRun() {
   const runId = yield select(makeSelectRunId());
-  console.log(`Request for run [${runId}]`);
-  const requestUrl =
-    'https://run.mocky.io/v3/118dfb56-ff18-47c4-85a6-c4ad1d475bbf';
+  const requestUrl = `${getBaseUrl()}/api/v1/core/runs/${runId}/`;
+  const token = localStorage.getItem('token');
 
   try {
-    const response = yield call(request, requestUrl);
+    const response = yield call(request, requestUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
     yield put(updateRunAction(response));
   } catch (err) {
-    yield put(repoLoadingError(err));
+    if (err.response.status === 401) {
+      yield put(logoutAction());
+    } else {
+      yield put(repoLoadingError(err));
+    }
   }
 }
 

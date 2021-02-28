@@ -33,6 +33,8 @@ const FilterForm = ({
     setFilterDateEnd(end.format(format));
   };
 
+  return(<span/>);
+
   return (
     <Form layout="inline" name="basic" style={{ padding: '16px' }}>
       <Form.Item label="Search" name="query">

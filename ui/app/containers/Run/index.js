@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo, useEffect } from 'react';
+import React, {memo, useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -34,7 +34,7 @@ const { Text, Paragraph } = Typography;
 
 const columns = [
   {
-    title: 'Name',
+    title: 'Metric',
     dataIndex: 'name',
     key: 'name',
   },
@@ -50,17 +50,18 @@ export function Run({ run, match, getRun }) {
   useInjectSaga({ key: 'run', saga });
 
   const runId = match.params.id;
-
+  const didMount = useRef(true);
   useEffect(() => {
-    if (!run.runId) getRun(runId);
+    if (didMount.current) getRun(runId);
+    didMount.current = false;
   });
 
-  const measurements = run.measurements.map((meas, idx) => {
-    const cats = meas.measures.map(m => m.key);
-    const values = meas.measures.map(m => m.value);
+  const counts = run.counts.map((cnt, idx) => {
+    const cats = cnt.entries.map(m => m.key);
+    const values = cnt.entries.map(m => m.value);
     const options = {
       chart: { type: 'column' },
-      title: { text: `Measurement [${meas.name}]` },
+      title: { text: `Count [${cnt.name}]` },
       xAxis: { categories: cats, title: { text: null } },
       yAxis: {
         min: 0,
@@ -72,7 +73,7 @@ export function Run({ run, match, getRun }) {
       credits: { enabled: false },
       series: [
         {
-          name: meas.name,
+          name: cnt.name,
           data: values,
           color: '#6929C2',
         },
@@ -81,11 +82,29 @@ export function Run({ run, match, getRun }) {
 
     return (
       // eslint-disable-next-line react/no-array-index-key
-      <Card key={`measurements_chart_${idx}`} style={{ margin: '20px 0' }}>
+      <Card key={`counts_chart_${idx}`} style={{ margin: '20px 0' }}>
         <HighchartsReact highcharts={Highcharts} options={options} />
         <Divider />
       </Card>
     );
+  });
+
+  const parameters = run.parameters.map((param, i) => (
+    // eslint-disable-next-line react/no-array-index-key
+    <div key={`parameter_${param.name}_${param.value}_${i}`}>
+      <b>{param.name}</b>: {param.value}
+      <br />
+    </div>
+  ));
+
+  const description = run.description ? (
+    <p>{run.description}</p>
+  ) : (
+    <p>No description provided...</p>
+  );
+
+  const metrics = run.metrics.map((metric, i) => {
+    return { ...metric, key: i };
   });
 
   return (
@@ -99,16 +118,13 @@ export function Run({ run, match, getRun }) {
         <Divider />
         <Row gutter={[16, 16]}>
           <Col span={12}>
-            <Card title="Information" extra={<InfoCircleOutlined />}>
-              <b>Backend</b>: Aer
-              <br />
-              <b>Qiskit version</b>: 0.23.1
-              <br />
-              <b>QiskitFlow version</b>: 0.0.1-aplha
+            <Card title="Information & parameters" extra={<InfoCircleOutlined />}>
+              <b>QiskitFlow version</b>: {run.version}
               <br />
               <br />
-              <b>Execute experiment</b>:{' '}
-              <Text code>{`docker run qiskitflow:experiment_${runId}`}</Text>
+              {parameters}
+              <br />
+              <b>Execute experiment</b>: <Text code>...</Text>
               <br />
               <br />
               <b>BibTeX</b>:
@@ -122,29 +138,20 @@ export function Run({ run, match, getRun }) {
                         }`}
               </Paragraph>
             </Card>
-            <Card title="Parameters" style={{ margin: '20px 0' }}>
-              <Table
-                key="parameters_table"
-                dataSource={run.parameters}
-                columns={columns}
-                pagination={false}
-              />
-            </Card>
-            <Card title="Metrics" style={{ margin: '20px 0' }}>
-              <Table
+            <br/>
+            <Table
                 key="metrics_table"
-                dataSource={run.metrics}
+                dataSource={metrics}
                 columns={columns}
                 pagination={false}
               />
-            </Card>
           </Col>
           <Col span={12}>
             <Card
               title="Experiment description"
               style={{ margin: '0 0 20px 0' }}
             >
-              <Skeleton avatar paragraph={{ rows: 4 }} />
+              {description}
             </Card>
             <Card title="Files">
               <Tree
@@ -153,33 +160,13 @@ export function Run({ run, match, getRun }) {
                 defaultExpandedKeys={['0-0-0']}
                 treeData={[
                   {
-                    title: 'root',
+                    title: 'run.json',
                     key: '0-0',
-                    children: [
-                      {
-                        title: 'utils',
-                        key: '0-0-0',
-                        children: [
-                          {
-                            title: 'utils.py',
-                            key: '0-0-0-0',
-                          },
-                          {
-                            title: '__init__.py',
-                            key: '0-0-0-1',
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                  {
-                    title: 'quantum_teleportation.py',
-                    key: '0-1',
                   },
                 ]}
               />
             </Card>
-            {measurements}
+            {counts}
           </Col>
         </Row>
       </div>

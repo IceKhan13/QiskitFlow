@@ -1,5 +1,6 @@
 import { call, select, put, takeLatest } from 'redux-saga/effects';
 import request from 'utils/request';
+import getBaseUrl from 'utils/urls';
 import {
   makeSelectExperimentRunsListFilter,
   makeSelectExperimentRunsListPage,
@@ -7,7 +8,7 @@ import {
 } from './selectors';
 import { updateRunsAction } from './actions';
 
-import { repoLoadingError } from '../App/actions';
+import {logoutAction, repoLoadingError} from '../App/actions';
 import {
   GET_RUNS,
   SET_FILTER_DATE_END,
@@ -20,16 +21,25 @@ export function* getRuns() {
   const parameters = yield select(makeSelectExperimentRunsListFilter());
   const page = yield select(makeSelectExperimentRunsListPage());
   const experimentId = yield select(makeSelectExperimentRunsListExperimentId());
-  console.log(
-    `Request for runs ${experimentId} with params ${parameters} for page ${page}`,
-  );
-  const requestUrl = `https://run.mocky.io/v3/2caa3027-f547-48eb-80ba-91bce13b3763`;
+  const offset = 10 * (page - 1);
+  const limit = 10;
+  const requestUrl = `${getBaseUrl()}/api/v1/core/runs/?experiment=${experimentId}&offset=${offset}&limit=${limit}`;
+  const token = localStorage.getItem('token');
 
   try {
-    const response = yield call(request, requestUrl);
+    const response = yield call(request, requestUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
     yield put(updateRunsAction({ ...response, page }));
   } catch (err) {
-    yield put(repoLoadingError(err));
+    if (err.response.status === 401) {
+      yield put(logoutAction());
+    } else {
+      yield put(repoLoadingError(err));
+    }
   }
 }
 
