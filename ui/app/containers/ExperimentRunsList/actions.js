@@ -35,11 +35,11 @@ export function getRunsAction(
   };
 }
 
-export function updateRunsAction({ items, total, page }) {
+export function updateRunsAction({ results, count, page }) {
   return {
     type: UPDATE_RUNS,
-    total,
-    items,
+    count,
+    results,
     page,
   };
 }

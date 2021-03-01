@@ -11,13 +11,14 @@ import {
   SET_FILTER_DATE_END,
   SET_FILTER_DATE_START,
   SET_FILTER_QUERY,
+  SET_PAGE,
 } from './constants';
 
 export const initialState = {
   loading: true,
   page: 1,
-  total: 0,
-  items: [], // experiments
+  count: 0,
+  results: [], // experiments
   filter: {
     query: '',
     dateStart: false,
@@ -35,10 +36,13 @@ const experimentsListReducer = (state = initialState, action) =>
         draft.loading = true;
         break;
       case UPDATE_EXPERIMENTS:
-        draft.items = action.items;
-        draft.total = action.total;
+        draft.results = action.results;
+        draft.count = action.count;
         draft.page = action.page;
         draft.loading = false;
+        break;
+      case SET_PAGE:
+        draft.page = action.page;
         break;
       case SET_FILTER_QUERY:
         draft.filter = { ...state.filter, query: action.query };

@@ -3,10 +3,10 @@ import { initialState } from './reducer';
 
 const selectExperimentsRunsList = state => state.runs || initialState;
 
-const makeSelectExperimentRunsListItems = () =>
+const makeSelectExperimentRunsListResults = () =>
   createSelector(
     selectExperimentsRunsList,
-    state => state.items,
+    state => state.results,
   );
 
 const makeSelectExperimentRunsListPage = () =>
@@ -21,10 +21,10 @@ const makeSelectExperimentRunsListLoading = () =>
     state => state.loading,
   );
 
-const makeSelectExperimentRunsListTotal = () =>
+const makeSelectExperimentRunsListCount = () =>
   createSelector(
     selectExperimentsRunsList,
-    state => state.total,
+    state => state.count,
   );
 
 const makeSelectExperimentRunsListFilter = () =>
@@ -40,10 +40,10 @@ const makeSelectExperimentRunsListExperimentId = () =>
   );
 
 export {
-  makeSelectExperimentRunsListItems,
+  makeSelectExperimentRunsListResults,
   makeSelectExperimentRunsListPage,
   makeSelectExperimentRunsListLoading,
-  makeSelectExperimentRunsListTotal,
+  makeSelectExperimentRunsListCount,
   makeSelectExperimentRunsListFilter,
   makeSelectExperimentRunsListExperimentId,
 };

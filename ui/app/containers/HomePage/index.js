@@ -37,31 +37,46 @@ export function HomePage({ dispatch, user, loggedIn, loading }) {
   return (
     <div>
       <Helmet>
-        <title>Dashboard</title>
+        <title>Home</title>
       </Helmet>
       <Row gutter={[16, 16]}>
         <Col span={18}>
-          <Card title="Greetings" style={{ margin: '20px 0' }}>
-            <Skeleton avatar paragraph={{ rows: 4 }} />
+          <Card title="Greetings!" style={{ margin: '20px 0' }}>
+            <p>
+              Welcome to alpha version of QiskitFlow! Platform for tracking,
+              sharing and running quantum experiments in a clean and
+              understandable for developers, researchers and students manner.
+              Thank you for taking time and reviewing our efforts in making
+              quantum computing more transparent for everybody!
+            </p>
+            <p>
+              If you have any questions or suggestions feel free to drop an
+              email qiskitflow@gmail.com or open{' '}
+              <a href="https://github.com/IceKhan13/QiskitFlow/issues" target="_blank">
+                Github issue
+              </a>
+            </p>
           </Card>
           <Divider />
-          <h2>Shared experiments</h2>
+          <h2>Public experiments</h2>
           <SharedRunsList />
         </Col>
         <Col span={6}>
           <Card title="QiskitFlow info" style={{ margin: '20px 0' }}>
             <b>Build</b>: 0.0.1-alpha
             <br />
-            <b>Uptime</b>: 10 days
-            <br />
             <b>Email</b>: qiskitflow@gmail.com
+            <br />
+            <b>Github</b>: https://github.com/IceKhan13/QiskitFlow
+            <br />
+            <b>PyPi</b>: https://pypi.org/project/qiskitflow/
           </Card>
+          {loginForm}
           <img
-            src="https://media.giphy.com/media/CamIr5pLSEU6xfC6Ro/giphy.gif"
+            src="https://media.giphy.com/media/rmIGBIsDle8dEPubrG/giphy.gif"
             alt="QiskitFlow 3d"
             width="100%"
           />
-          {loginForm}
           <Card title="Roadmap" style={{ margin: '20px 0' }}>
             <Steps direction="vertical" current={1}>
               <Step
@@ -75,7 +90,7 @@ export function HomePage({ dispatch, user, loggedIn, loading }) {
               />
               <Step
                 title="Experiments compiler"
-                description="Compiler backend for compiling executable images for running experiments"
+                description="Compiler backend for building executable images of executed experiments"
               />
             </Steps>
           </Card>

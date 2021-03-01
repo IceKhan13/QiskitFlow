@@ -140,6 +140,8 @@ module.exports = options => ({
     // drop any unreachable code.
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
+      BASE_URL_PROD: 'http://qiskitflow.com',
+      BASE_URL_DEV: 'http://localhost:8000',
     }),
   ]),
   resolve: {

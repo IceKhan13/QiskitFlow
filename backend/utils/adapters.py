@@ -24,7 +24,7 @@ class RequestToModelAdapter:
                             run=run)
             metric.save()
 
-        for p in request.get("paramters", []):
+        for p in request.get("parameters", []):
             parameter = Parameter(name=p.get("name"),
                                   value=p.get("value"),
                                   timestamp=p.get("timestamp"),

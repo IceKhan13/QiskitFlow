@@ -26,11 +26,11 @@ export function getRunsAction(page, query = '') {
   };
 }
 
-export function updateRunsAction({ items, total, page }) {
+export function updateRunsAction({ results, count, page }) {
   return {
     type: UPDATE_SHARED_RUNS,
-    total,
-    items,
+    count,
+    results,
     page,
   };
 }

@@ -6,9 +6,9 @@
  * contain code that should be seen on all pages. (e.g. navigation bar)
  */
 
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState, useEffect, cloneElement, Children } from 'react';
 import { Helmet } from 'react-helmet';
-import { Switch, Route, Link } from 'react-router-dom';
+import { Switch, Redirect, Route, Link } from 'react-router-dom';
 import { Layout, Menu, Table } from 'antd';
 
 import {
@@ -38,8 +38,25 @@ const { SubMenu } = Menu;
 const logoStyle = {
   height: '32px',
   margin: '16px',
-  background: 'rgba(255, 255, 255, 0.3)',
+  background: 'rgba(255, 255, 255, 0.0)',
 };
+
+// eslint-disable-next-line react/prop-types
+function PrivateRoute({ component: Component, authed, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        authed === true ? (
+          <Component {...props} />
+        ) : (
+          // eslint-disable-next-line react/prop-types
+          <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+        )
+      }
+    />
+  );
+}
 
 function App({ user, loggedIn, logoutUser, getProfile }) {
   useInjectSaga({ key: 'login', saga });
@@ -65,7 +82,11 @@ function App({ user, loggedIn, logoutUser, getProfile }) {
         <Menu.Item key="experiments" icon={<DesktopOutlined />}>
           <Link to="/experiments">My experiments</Link>
         </Menu.Item>
-        <SubMenu key="profile" icon={<UserOutlined />} title={`${user.username}`}>
+        <SubMenu
+          key="profile"
+          icon={<UserOutlined />}
+          title={`${user.username}`}
+        >
           <Menu.Item key="logout" onClick={logoutUser}>
             Logout
           </Menu.Item>
@@ -98,17 +119,27 @@ function App({ user, loggedIn, logoutUser, getProfile }) {
             >
               <Switch>
                 <Route exact path="/" component={HomePage} />
-                <Route exact path="/experiments" component={ExperimentsList} />
-                <Route
+                <PrivateRoute
+                  exact
+                  authed
+                  path="/experiments"
+                  component={ExperimentsList}
+                />
+                <PrivateRoute
+                  authed
                   path="/experiments/:experimentId"
                   component={ExperimentRunsList}
                 />
-                <Route path="/runs/:id" component={Run} />
+                <PrivateRoute
+                  authed
+                  path="/runs/:id"
+                  component={Run}
+                />
                 <Route path="" component={NotFoundPage} />
               </Switch>
             </div>
           </Content>
-          <Footer style={{ textAlign: 'center' }}>QiskitFlow ©2020</Footer>
+          <Footer style={{ textAlign: 'center' }}>QiskitFlow ©2021</Footer>
         </Layout>
       </Layout>
     </div>

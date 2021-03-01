@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -13,15 +13,14 @@ import { compose } from 'redux';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import { DeleteOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import {Table, Button, Card, Skeleton} from 'antd';
+import { Table, Card } from 'antd';
 import FilterForm from 'containers/GeneralFilter';
 import {
-  makeSelectExperimentRunsListItems,
+  makeSelectExperimentRunsListResults,
   makeSelectExperimentRunsListLoading,
   makeSelectExperimentRunsListPage,
-  makeSelectExperimentRunsListTotal,
+  makeSelectExperimentRunsListCount,
   makeSelectExperimentRunsListFilter,
 } from './selectors';
 import {
@@ -40,9 +39,9 @@ const key = 'runs';
 export function ExperimentRunsList({
   match,
   page,
-  items,
+  results,
   loading,
-  total,
+  count,
   filter,
   getRuns,
   setFilterDateStart,
@@ -56,17 +55,20 @@ export function ExperimentRunsList({
 
   const id = match.params.experimentId;
 
+  const didMount = useRef(true);
   useEffect(() => {
     setExperimentId(id);
-    if (items.length === 0) getRuns();
+    if (didMount.current) getRuns();
+    didMount.current = false;
   });
 
   const columns = [
     {
-      title: 'Run id',
-      dataIndex: 'uuid',
-      key: 'uuid',
-      render: uuid => <Link to={`/runs/${uuid}`}>{`Run [${uuid}]`}</Link>,
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      // eslint-disable-next-line no-shadow
+      render: id => <Link to={`/runs/${id}`}>{`Run [${id}]`}</Link>,
     },
     {
       title: 'Metrics',
@@ -93,23 +95,14 @@ export function ExperimentRunsList({
       },
     },
     {
-      title: '# measurements',
-      dataIndex: 'measurements',
-      key: 'measurements',
-      render: measurements => measurements.length,
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: () => (
-        <span>
-          <Button danger size="small" type="text" icon={<DeleteOutlined />}>
-            Delete
-          </Button>
-        </span>
-      ),
+      title: '# counts',
+      dataIndex: 'counts',
+      key: 'counts',
+      render: counts => counts.length,
     },
   ];
+
+  const rows = results.map((run, i) => { return { ...run, key: i }});
 
   return (
     <div>
@@ -118,22 +111,22 @@ export function ExperimentRunsList({
         <meta name="description" content={`Runs for experiment ${id}`} />
       </Helmet>
       <Card title="Runs list">
-        <Skeleton avatar paragraph={{ rows: 2 }} />
+        <FilterForm
+          setFilterDateStart={setFilterDateStart}
+          setFilterDateEnd={setFilterDateEnd}
+          setFilterQuery={setFilterQuery}
+          filter={filter}
+        />
       </Card>
-      <FilterForm
-        setFilterDateStart={setFilterDateStart}
-        setFilterDateEnd={setFilterDateEnd}
-        setFilterQuery={setFilterQuery}
-        filter={filter}
-      />
       <Table
         loading={loading}
         columns={columns}
-        dataSource={items}
-        onChange={p => setPage(p)}
-        defaultCurrent={1}
-        current={page}
-        total={total}
+        dataSource={rows}
+        pagination={{
+          onChange: p => setPage(p),
+          current: page,
+          total: count,
+        }}
       />
     </div>
   );
@@ -141,10 +134,10 @@ export function ExperimentRunsList({
 
 ExperimentRunsList.propTypes = {
   match: PropTypes.object,
-  items: PropTypes.array,
+  results: PropTypes.array,
   loading: PropTypes.bool,
   page: PropTypes.number,
-  total: PropTypes.number,
+  count: PropTypes.number,
   filter: PropTypes.object,
   getRuns: PropTypes.func,
   setFilterDateStart: PropTypes.func,
@@ -155,10 +148,10 @@ ExperimentRunsList.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  items: makeSelectExperimentRunsListItems(),
+  results: makeSelectExperimentRunsListResults(),
   loading: makeSelectExperimentRunsListLoading(),
   page: makeSelectExperimentRunsListPage(),
-  total: makeSelectExperimentRunsListTotal(),
+  count: makeSelectExperimentRunsListCount(),
   filter: makeSelectExperimentRunsListFilter(),
 });
 

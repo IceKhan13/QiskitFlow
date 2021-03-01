@@ -11,8 +11,7 @@ import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
-import { Table, Button, Tag, Pagination, Card, Skeleton } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import { Table, Pagination, Card } from 'antd';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
@@ -20,10 +19,10 @@ import { Link } from 'react-router-dom';
 import FilterForm from 'containers/GeneralFilter';
 import {
   makeSelectExperimentListFilter,
-  makeSelectExperimentListItems,
+  makeSelectExperimentListResults,
   makeSelectExperimentListLoading,
   makeSelectExperimentListPage,
-  makeSelectExperimentListTotal,
+  makeSelectExperimentListCount,
 } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -34,15 +33,14 @@ import {
   setFilterQueryAction,
   setPageAction,
 } from './actions';
-import Login from '../Login';
 
 const expandedRowRender = record => {
   const columns = [
     {
-      title: 'Run id',
-      dataIndex: 'uuid',
-      key: 'uuid',
-      render: uuid => <Link to={`/runs/${uuid}`}>{`Run [${uuid}]`}</Link>,
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      render: id => <Link to={`/runs/${id}`}>{`Run [${id}]`}</Link>,
     },
     {
       title: 'Metrics',
@@ -69,29 +67,20 @@ const expandedRowRender = record => {
       },
     },
     {
-      title: '# measurements',
-      dataIndex: 'measurements',
-      key: 'measurements',
-      render: measurements => measurements.length,
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: () => (
-        <span>
-          <Button danger size="small" type="text" icon={<DeleteOutlined />}>
-            Delete
-          </Button>
-        </span>
-      ),
+      title: '# counts',
+      dataIndex: 'counts',
+      key: 'counts',
+      render: counts => counts.length,
     },
   ];
+
+  const rows = record.runs.map((run, i) => ({ ...run, key: i }));
 
   return (
     <Table
       size="small"
       columns={columns}
-      dataSource={record.runs}
+      dataSource={rows}
       pagination={false}
     />
   );
@@ -102,8 +91,8 @@ const key = 'experiments';
 export function ExperimentsList({
   loading,
   page,
-  total,
-  items,
+  count,
+  results,
   filter,
   getExperiments,
   setFilterDateStart,
@@ -115,7 +104,7 @@ export function ExperimentsList({
   useInjectSaga({ key, saga });
 
   useEffect(() => {
-    if (items.length === 0) getExperiments(1);
+    if (results.length === 0) getExperiments(1);
   });
 
   const columns = [
@@ -131,21 +120,10 @@ export function ExperimentsList({
       key: 'runs',
       render: runs => runs.length,
     },
-    { title: 'Version', dataIndex: 'version', key: 'version' },
-    { title: 'Author', dataIndex: 'author', key: 'author' },
-    { title: 'Date', dataIndex: 'created_at', key: 'created_at' },
-    {
-      title: 'Tags',
-      key: 'tags',
-      render: row => {
-        const tagsList = row.tags.map((tag, i) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <Tag key={`tags_${tag}_${i}`}>{tag}</Tag>
-        ));
-        return <div>{tagsList}</div>;
-      },
-    },
+    { title: 'Date', dataIndex: 'created_at', key: 'created_at', render: (date) => <span>{new Date(date).toDateString()}</span>},
   ];
+
+  const rows = results.map((res, i) => ({ ...res, key: i }));
 
   return (
     <div>
@@ -154,27 +132,23 @@ export function ExperimentsList({
         <meta name="description" content="QiskitFlow. Experiments list." />
       </Helmet>
       <Card title="Experiments list">
-        <Skeleton avatar paragraph={{ rows: 2 }} />
+        <FilterForm
+          setFilterDateStart={setFilterDateStart}
+          setFilterDateEnd={setFilterDateEnd}
+          setFilterQuery={setFilterQuery}
+          filter={filter}
+        />
       </Card>
-      <FilterForm
-        setFilterDateStart={setFilterDateStart}
-        setFilterDateEnd={setFilterDateEnd}
-        setFilterQuery={setFilterQuery}
-        filter={filter}
-      />
       <Table
         loading={loading}
         columns={columns}
         expandable={{ expandedRowRender }}
-        dataSource={items}
-        pagination={
-          <Pagination
-            onChange={p => setPage(p)}
-            defaultCurrent={1}
-            current={page}
-            total={total}
-          />
-        }
+        dataSource={rows}
+        pagination={{
+          onChange: p => setPage(p),
+          current: page,
+          total: count,
+        }}
       />
     </div>
   );
@@ -185,8 +159,8 @@ ExperimentsList.propTypes = {
   dispatch: PropTypes.func.isRequired,
   loading: PropTypes.bool,
   page: PropTypes.number,
-  total: PropTypes.number,
-  items: PropTypes.array,
+  count: PropTypes.number,
+  results: PropTypes.array,
   filter: PropTypes.object,
   getExperiments: PropTypes.func,
   setFilterDateStart: PropTypes.func,
@@ -198,8 +172,8 @@ ExperimentsList.propTypes = {
 const mapStateToProps = createStructuredSelector({
   loading: makeSelectExperimentListLoading(),
   page: makeSelectExperimentListPage(),
-  total: makeSelectExperimentListTotal(),
-  items: makeSelectExperimentListItems(),
+  count: makeSelectExperimentListCount(),
+  results: makeSelectExperimentListResults(),
   filter: makeSelectExperimentListFilter(),
 });
 

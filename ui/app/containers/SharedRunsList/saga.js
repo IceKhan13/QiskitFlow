@@ -1,20 +1,27 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import request from 'utils/request';
+import getBaseUrl from 'utils/urls';
 import { GET_SHARED_RUNS, SET_PAGE, SET_FILTER_QUERY } from './constants';
-import { makeSelectSharedRunsPage, makeSelectSharedFilder } from './selectors';
+import { makeSelectSharedRunsPage, makeSelectSharedFilter } from './selectors';
 import { updateRunsAction } from './actions';
-import { repoLoadingError } from '../App/actions';
+import { repoLoadingError, logoutAction } from '../App/actions';
 
 export function* getRuns() {
   const page = yield select(makeSelectSharedRunsPage());
-  const filter = yield select(makeSelectSharedFilder());
-  const requestUrl = `https://run.mocky.io/v3/2caa3027-f547-48eb-80ba-91bce13b3763`;
+  const filter = yield select(makeSelectSharedFilter());
+  const offset = 10 * (page - 1);
+  const limit = 10;
+  const requestUrl = `${getBaseUrl()}/api/v1/core/runs/public/?offset=${offset}&limit=${limit}`;
 
   try {
     const response = yield call(request, requestUrl);
     yield put(updateRunsAction({ ...response, page }));
   } catch (err) {
-    yield put(repoLoadingError(err));
+    if (err.response.status === 401) {
+      yield put(logoutAction());
+    } else {
+      yield put(repoLoadingError(err));
+    }
   }
 }
 

@@ -83,24 +83,24 @@ class CoreApiTestCase(LiveServerTestCase):
         self.assertEqual(response.data["count"], len(self.experiments))
         self.assertEqual(len(response.data["results"]), len(self.experiments))
 
+    def test_runs_list_unauthorized(self):
+        """ Test experiment list unauthorized. Should see only public runs. """
+        request = self.factory.get("/api/v1/core/runs")
+        view = RunViewSet.as_view({'get': 'list'})
+        response = view(request)
+
+        self.assertEqual(response.data["count"], 0)
+        self.assertEqual(len(response.data["results"]), 0)
+
     def test_runs_list_authorized(self):
         """ Test experiment tuns list authorized. """
-        request = self.factory.get("/api/v1/core/experiments")
+        request = self.factory.get("/api/v1/core/runs")
         view = RunViewSet.as_view({'get': 'list'})
         force_authenticate(request, user=self.sample_user)
         response = view(request)
 
         self.assertEqual(response.data["count"], 4)
         self.assertEqual(len(response.data["results"]), 4)
-
-    def test_runs_list_unauthorized(self):
-        """ Test experiment list unauthorized. """
-        request = self.factory.get("/api/v1/core/experiments")
-        view = RunViewSet.as_view({'get': 'list'})
-        response = view(request)
-
-        self.assertEqual(response.status_code, 401)
-        self.assertEqual(response.status_text, "Unauthorized")
 
     def test_share_experiment(self):
         """ Test share experiment. """

@@ -33,10 +33,10 @@ const makeSelectRunParameters = () =>
     state => state.parameters,
   );
 
-const makeSelectRunMeasurements = () =>
+const makeSelectRunCounts = () =>
   createSelector(
     selectRunDomain,
-    state => state.measurements,
+    state => state.counts,
   );
 
 const makeSelectRunExperiment = () =>
@@ -56,7 +56,7 @@ export {
   selectRunDomain,
   makeSelectRunMetrics,
   makeSelectRunParameters,
-  makeSelectRunMeasurements,
+  makeSelectRunCounts,
   makeSelectRunExperiment,
   makeSelectRunId,
 };

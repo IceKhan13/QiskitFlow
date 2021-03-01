@@ -28,6 +28,8 @@ class Run(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     timestamp = models.IntegerField()  # local execution time
 
+    version = models.CharField(max_length=100, default="NA")
+
     experiment = models.ForeignKey(Experiment,
                                    on_delete=models.CASCADE,
                                    related_name='runs')

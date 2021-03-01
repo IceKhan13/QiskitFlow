@@ -17,7 +17,7 @@ import { useInjectReducer } from 'utils/injectReducer';
 import reducer from './reducer';
 import saga from './saga';
 import { loginAction } from '../App/actions';
-import { makeSelectLoggedIn, makeSelectUser } from '../App/selectors';
+import { makeSelectLoggedIn, makeSelectUser, makeSelectLoginError } from '../App/selectors';
 
 const layout = {
   labelCol: { span: 8 },
@@ -27,7 +27,7 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 
-export function Login({ login, user, loggedIn }) {
+export function Login({ login, user, loggedIn, loginError }) {
   useInjectReducer({ key: 'login', reducer });
   useInjectSaga({ key: 'login', saga });
 
@@ -39,6 +39,8 @@ export function Login({ login, user, loggedIn }) {
   const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
   };
+
+  console.log(loginError)
 
   return (
     <Card title="Login form" style={{ marginTop: 20}}>
@@ -52,6 +54,7 @@ export function Login({ login, user, loggedIn }) {
         <Form.Item
           label="Username"
           name="username"
+          validateStatus={loginError ? 'error' : ''}
           rules={[{ required: true, message: 'Please input your username!' }]}
         >
           <Input />
@@ -60,6 +63,8 @@ export function Login({ login, user, loggedIn }) {
         <Form.Item
           label="Password"
           name="password"
+          validateStatus={loginError ? 'error' : ''}
+          help={loginError ? 'Invalid login or password' : ''}
           rules={[{ required: true, message: 'Please input your password!' }]}
         >
           <Input.Password />
@@ -80,11 +85,13 @@ Login.propTypes = {
   login: PropTypes.func,
   user: PropTypes.object,
   loggedIn: PropTypes.bool,
+  loginError: PropTypes.string,
 };
 
 const mapStateToProps = createStructuredSelector({
   user: makeSelectUser(),
   loggedId: makeSelectLoggedIn(),
+  loginError: makeSelectLoginError(),
 });
 
 function mapDispatchToProps(dispatch) {

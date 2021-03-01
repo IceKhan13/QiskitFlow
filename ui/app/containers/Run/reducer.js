@@ -8,6 +8,7 @@ import { DEFAULT_ACTION, GET_RUN, UPDATE_RUN } from './constants';
 
 export const initialState = {
   loading: true,
+  id: false,
   runId: false,
   experiment: {
     name: '',
@@ -16,7 +17,8 @@ export const initialState = {
   },
   metrics: [],
   parameters: [],
-  measurements: [],
+  counts: [],
+  version: 'NA',
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -32,7 +34,8 @@ const runReducer = (state = initialState, action) =>
       case UPDATE_RUN:
         draft.metrics = action.metrics;
         draft.parameters = action.parameters;
-        draft.measurements = action.measurements;
+        draft.counts = action.counts;
+        draft.version = action.version;
         break;
     }
   });

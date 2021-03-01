@@ -1,19 +1,37 @@
-import { takeLatest, take, call, put, select } from 'redux-saga/effects';
+import { takeLatest, call, put } from 'redux-saga/effects';
 import request from 'utils/request';
+import getBaseUrl from 'utils/urls';
 
 // Individual exports for testing
 import { USER_LOGIN, GET_PROFILE, USER_LOGOUT } from '../App/constants';
-import { loginErrorAction, loginSuccessAction, profileAction } from '../App/actions';
+import {
+  loginErrorAction,
+  loginSuccessAction,
+} from '../App/actions';
 
 export function* getToken({ username, password }) {
-  const tokenUrl =
-    'https://run.mocky.io/v3/ae412de5-ab8f-4ef9-842d-c340c973a28e';
+  const tokenUrl = `${getBaseUrl()}/api/token/`;
 
   try {
-    const response = yield call(request, tokenUrl);
+    const response = yield call(request, tokenUrl, {
+      method: 'POST',
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     const token = response.access;
     localStorage.setItem('token', token);
-    yield put(profileAction());
+    // yield put(profileAction());
+    yield put(
+      loginSuccessAction({
+        username,
+        email: '',
+      }),
+    );
   } catch (err) {
     yield put(loginErrorAction(err));
   }

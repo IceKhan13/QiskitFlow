@@ -26,7 +26,7 @@ export const initialState = {
     repositories: false,
   },
   loggedIn: false,
-  loginError: false,
+  loginError: '',
   user: {
     username: '',
     email: '',
@@ -57,6 +57,7 @@ const appReducer = (state = initialState, action) =>
       case USER_LOGIN_SUCCESS:
         draft.loggedIn = true;
         draft.user = action.user;
+        draft.loginError = initialState.loginError;
         break;
 
       case USER_LOGIN_ERROR:
@@ -66,9 +67,8 @@ const appReducer = (state = initialState, action) =>
         break;
 
       case USER_LOGOUT:
-        console.log("LOGGING OUT!")
         draft.loggedIn = false;
-        draft.loginError = false;
+        draft.loginError = initialState.loginError;
         draft.user = initialState.user;
         break;
     }

@@ -51,6 +51,12 @@ const makeSelectLoggedIn = () =>
     state => state.loggedIn,
   );
 
+const makeSelectLoginError = () =>
+  createSelector(
+    selectGlobal,
+    state => state.loginError,
+  );
+
 export {
   selectGlobal,
   makeSelectCurrentUser,
@@ -60,4 +66,5 @@ export {
   makeSelectLocation,
   makeSelectUser,
   makeSelectLoggedIn,
+  makeSelectLoginError,
 };

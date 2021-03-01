@@ -35,7 +35,7 @@ class ParameterSerializer(serializers.ModelSerializer):
 
 class RunSerializer(serializers.ModelSerializer):
     """ Serializer for experiment run. """
-
+    id = serializers.IntegerField(read_only=True)
     metrics = MetricSerializer(many=True)
     parameters = ParameterSerializer(many=True)
     counts = CountSerializer(many=True)
@@ -51,4 +51,4 @@ class ExperimentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Experiment
-        fields = ['runs', "name"]
+        fields = ['id', 'runs', "name", "created_at"]

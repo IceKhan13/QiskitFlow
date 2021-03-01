@@ -19,11 +19,12 @@ export function getRunAction(runId) {
   };
 }
 
-export function updateRunAction({ metrics, parameters, measurements }) {
+export function updateRunAction({ metrics, parameters, counts, version }) {
   return {
     type: UPDATE_RUN,
     metrics,
     parameters,
-    measurements,
+    counts,
+    version,
   };
 }

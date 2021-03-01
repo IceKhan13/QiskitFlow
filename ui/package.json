@@ -1,7 +1,7 @@
 {
-  "name": "react-boilerplate",
-  "version": "4.0.0",
-  "description": "A highly scalable, offline-first foundation with the best DX and a focus on performance and best practices",
+  "name": "qiskitflow-ui",
+  "version": "0.0.1-alpha",
+  "description": "Platform for tracking, sharing and running quantum experiments in a clean and understandable for developers, researchers and students manner.",
   "repository": {
     "type": "git",
     "url": "git://github.com/react-boilerplate/react-boilerplate.git"

@@ -8,13 +8,14 @@ import {
   DEFAULT_ACTION,
   UPDATE_SHARED_RUNS,
   SET_FILTER_QUERY,
+  SET_PAGE,
 } from './constants';
 
 export const initialState = {
   loading: true,
   page: 1,
-  total: 0,
-  items: [],
+  count: 0,
+  results: [],
   filter: {
     query: '',
   },
@@ -28,8 +29,11 @@ const sharedRunsListReducer = (state = initialState, action) =>
         break;
       case UPDATE_SHARED_RUNS:
         draft.loading = false;
-        draft.total = action.total;
-        draft.items = action.items;
+        draft.count = action.count;
+        draft.results = action.results;
+        draft.page = action.page;
+        break;
+      case SET_PAGE:
         draft.page = action.page;
         break;
       case SET_FILTER_QUERY:

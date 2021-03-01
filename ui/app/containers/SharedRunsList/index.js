@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo, useEffect } from 'react';
+import React, {memo, useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -17,19 +17,19 @@ import { Link } from 'react-router-dom';
 import {
   makeSelectSharedRunsPage,
   makeSelectSharedRunsLoading,
-  makeSelectSharedRunsTotal,
-  makeSelectSharedRunsItems,
+  makeSelectSharedRunsCount,
+  makeSelectSharedRunsResults,
 } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import { getRunsAction } from './actions';
+import { getRunsAction, setPageAction } from './actions';
 
 const columns = [
   {
-    title: 'Run id',
-    dataIndex: 'uuid',
-    key: 'uuid',
-    render: uuid => <Link to={`/runs/${uuid}`}>{`Run [${uuid}]`}</Link>,
+    title: 'ID',
+    dataIndex: 'id',
+    key: 'id',
+    render: runId => <Link to={`/runs/${runId}`}>{`Run [${runId}]`}</Link>,
   },
   {
     title: 'Metrics',
@@ -55,44 +55,37 @@ const columns = [
       return <span>{parametersList}</span>;
     },
   },
-  {
-    title: '# measurements',
-    dataIndex: 'measurements',
-    key: 'measurements',
-    render: measurements => measurements.length,
-  },
-  {
-    title: 'Author',
-    dataIndex: 'author',
-    key: 'author',
-  },
 ];
 
 export function SharedRunsList({
   getRuns,
-  items,
-  total,
+  results,
+  count,
   page,
   loading,
   setPage,
 }) {
   useInjectReducer({ key: 'sharedRunsList', reducer });
   useInjectSaga({ key: 'sharedRunsList', saga });
-
+  const didMount = useRef(true);
   useEffect(() => {
-    if (items.length === 0) getRuns();
+    if (didMount.current) getRuns();
+    didMount.current = false;
   });
+
+  const rows = results.map((run, i) => { return { ...run, key: i}});
 
   return (
     <div>
       <Table
         loading={loading}
         columns={columns}
-        dataSource={items}
-        onChange={p => setPage(p)}
-        defaultCurrent={1}
-        current={page}
-        total={total}
+        dataSource={rows}
+        pagination={{
+          onChange: p => setPage(p),
+          current: page,
+          total: count,
+        }}
       />
     </div>
   );
@@ -102,16 +95,16 @@ SharedRunsList.propTypes = {
   // eslint-disable-next-line react/no-unused-prop-types
   dispatch: PropTypes.func.isRequired,
   getRuns: PropTypes.func,
-  items: PropTypes.array,
-  total: PropTypes.number,
+  results: PropTypes.array,
+  count: PropTypes.number,
   page: PropTypes.number,
   loading: PropTypes.bool,
   setPage: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
-  items: makeSelectSharedRunsItems(),
-  total: makeSelectSharedRunsTotal(),
+  results: makeSelectSharedRunsResults(),
+  count: makeSelectSharedRunsCount(),
   page: makeSelectSharedRunsPage(),
   loading: makeSelectSharedRunsLoading(),
 });
@@ -120,7 +113,7 @@ function mapDispatchToProps(dispatch) {
   return {
     dispatch,
     getRuns: () => dispatch(getRunsAction()),
-    setPage: page => dispatch(getRunsAction(page)),
+    setPage: page => dispatch(setPageAction(page)),
   };
 }
 
