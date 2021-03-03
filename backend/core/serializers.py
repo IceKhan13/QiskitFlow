@@ -1,6 +1,23 @@
 from rest_framework import serializers
 
-from .models import Count, CountEntry, Metric, Parameter, Run, Experiment
+from .models import (Count, CountEntry, Metric, Parameter,
+                     Run, Experiment, StateVector, ComplexNumber)
+
+
+class ComplexNumberSerializer(serializers.ModelSerializer):
+    """ Serializer for complex numbers. """
+    class Meta:
+        model = ComplexNumber
+        fields = ['real', 'img']
+
+
+class StateVectorSerializer(serializers.ModelSerializer):
+    """ Serializer for state vector. """
+    vector = ComplexNumberSerializer(many=True)
+
+    class Meta:
+        model = StateVector
+        fields = '__all__'
 
 
 class CountEntrySerializer(serializers.ModelSerializer):
@@ -39,6 +56,7 @@ class RunSerializer(serializers.ModelSerializer):
     metrics = MetricSerializer(many=True)
     parameters = ParameterSerializer(many=True)
     counts = CountSerializer(many=True)
+    state_vectors = StateVectorSerializer(many=True)
 
     class Meta:
         model = Run

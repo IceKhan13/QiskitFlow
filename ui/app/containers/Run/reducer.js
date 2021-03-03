@@ -4,7 +4,13 @@
  *
  */
 import produce from 'immer';
-import { DEFAULT_ACTION, GET_RUN, UPDATE_RUN } from './constants';
+import {
+  DEFAULT_ACTION,
+  GET_RUN,
+  UPDATE_RUN,
+  RUN_UPDATE_PUBLIC,
+  RUN_SET_PUBLIC,
+} from './constants';
 
 export const initialState = {
   loading: true,
@@ -18,6 +24,9 @@ export const initialState = {
   metrics: [],
   parameters: [],
   counts: [],
+  description: '...',
+  is_public: false,
+  state_vectors: [],
   version: 'NA',
 };
 
@@ -31,11 +40,20 @@ const runReducer = (state = initialState, action) =>
         draft.loading = true;
         draft.runId = action.runId;
         break;
+      case RUN_UPDATE_PUBLIC:
+        draft.is_public = action.is_public;
+        break;
+      case RUN_SET_PUBLIC:
+        draft.is_public = action.is_public;
+        break;
       case UPDATE_RUN:
         draft.metrics = action.metrics;
         draft.parameters = action.parameters;
         draft.counts = action.counts;
+        draft.state_vectors = action.state_vectors;
+        draft.description = action.description;
         draft.version = action.version;
+        draft.is_public = action.is_public;
         break;
     }
   });

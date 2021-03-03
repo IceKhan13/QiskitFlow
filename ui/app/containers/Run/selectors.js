@@ -51,6 +51,12 @@ const makeSelectRunId = () =>
     state => state.runId,
   );
 
+const makeSelectIsPublic = () =>
+  createSelector(
+    selectRunDomain,
+    state => state.is_public,
+  );
+
 export default makeSelectRun;
 export {
   selectRunDomain,
@@ -59,4 +65,5 @@ export {
   makeSelectRunCounts,
   makeSelectRunExperiment,
   makeSelectRunId,
+  makeSelectIsPublic,
 };

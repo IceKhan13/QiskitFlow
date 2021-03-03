@@ -9,20 +9,21 @@ services:
       POSTGRES_DB: qiskitflow
     ports:
     - 5432:5432
-  api:
-    build: .
-    command: sh -c "python manage.py migrate && gunicorn qiskitflow_backend.wsgi:application --bind 0.0.0.0:8000"
-    volumes:
-      - .:/code
-    ports:
-      - "8000:8000"
-    environment:
-      DEBUG: 0
-      ALLOWED_HOSTS: "*,"
-      DB_NAME: qiskitflow
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_HOST: db
-      DB_PORT: 5432
-    depends_on:
-      - db
+#  api:
+#    build: .
+#    command: sh -c "python manage.py migrate && gunicorn qiskitflow_backend.wsgi:application --bind 0.0.0.0:8000"
+#    volumes:
+#      - .:/code
+#    ports:
+#      - "8000:8000"
+#    environment:
+#      DEBUG: 0
+#      ALLOWED_HOSTS: "*,"
+#      DB_NAME: qiskitflow
+#      DB_USER: postgres
+#      DB_PASSWORD: postgres
+#      DB_HOST: db
+#      DB_PORT: 5432
+#      STATIC_URL: "/static/"
+#    depends_on:
+#      - db

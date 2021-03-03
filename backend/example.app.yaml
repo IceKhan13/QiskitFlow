@@ -1,0 +1,45 @@
+runtime: python
+
+service: qiskitflow-backend
+
+# the PROJECT-DIRECTORY is the one with settings.py and wsgi.py
+entrypoint: gunicorn -b :$PORT qiskitflow_backend.wsgi # specific to a GUnicorn HTTP server deployment
+env: flex # for Google Cloud Flexible App Engine
+
+# any environment variables you want to pass to your application.
+# accessible through os.environ['VARIABLE_NAME']
+env_variables:
+# the secret key used for the Django app (from PROJECT-DIRECTORY/settings.py)
+  SECRET_KEY: ''
+  DEBUG: False # always False for deployment
+
+# everything after /cloudsql/ can be found by entering >> gcloud sql instances describe DATABASE-NAME << in your Terminal
+# the DATABASE-NAME is the name you gave your project's PostgreSQL database
+# the second line from the describe output called connectionName can be copied and pasted after /cloudsql/
+  DB_HOST: '/cloudsql/<PROJECT>:<REGION>:<DB_NAME>'
+  DB_PORT: '5432' # PostgreSQL port
+  DB_NAME: ''
+  DB_USER: '' # either 'postgres' (default) or one you created on the PostgreSQL instance page
+  DB_PASSWORD: ''
+  ALLOWED_HOSTS: "<PROJECT>.appspot.com,"
+  DJANGO_ADMINS: "<USERNAME>,<PASSWORD>,<EMAIL>;"
+
+  STATIC_URL: 'https://storage.googleapis.com/<BUCKET>/static/' # this is the url that you sync static files to
+
+handlers:
+- url: /static
+  static_dir: static
+
+beta_settings:
+# from command >> gcloud sql instances describe DATABASE-NAME <<
+  cloud_sql_instances: <PROJECT>:<REGION>:<DB_NAME>
+
+runtime_config:
+  python_version: 3 # enter your Python version BASE ONLY here. Enter 2 for 2.7.9 or 3 for 3.6.4
+
+manual_scaling:
+  instances: 1
+resources:
+  cpu: 1
+  memory_gb: 2
+  disk_size_gb: 10

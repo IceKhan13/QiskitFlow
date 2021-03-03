@@ -26,3 +26,6 @@ dist/*
 
 hackathon/demo/_experiments/**
 lib/tests/resources/_experiments/**
+
+
+backend/app.yaml

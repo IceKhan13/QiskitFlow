@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY", 'oo*25ho8%@j6g3k*e22#3*gw&41r+(g9-7gnkoow_pkyk&k%cv')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", 0)
+DEBUG = os.environ['DEBUG'] == 'True'
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 
@@ -131,10 +131,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-# VENV_PATH = os.path.dirname(BASE_DIR)
-# STATIC_ROOT = os.path.join(VENV_PATH, 'static_root')
+STATIC_URL = os.environ.get('STATIC_URL', '/static/')  # /static/ if DEBUG else Google Cloud bucket url
+
+# collectstatic directory (located OUTSIDE the base directory)
+# TODO: configure the name and path to your static bucket directory (where collectstatic will copy to)
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'qiskitflow-static')
+
+STATICFILES_DIRS = [
+  # TODO: configure the name and path to your development static directory
+    os.path.join(BASE_DIR, 'static'),  # static directory (in the top level directory) for local testing
+]
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -159,3 +165,5 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=5),
     'SLIDING_TOKEN_LIFETIME': timedelta(hours=3)
 }
+
+ADMINS = os.environ.get("DJANGO_ADMINS", "").split(";")
