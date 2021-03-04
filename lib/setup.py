@@ -16,15 +16,20 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/IceKhan13/QiskitFlow",
     packages=setuptools.find_packages(),
-    keywords=['quantum computing', 'qiskit', 'experiments', 'reproducibility'],
+    keywords=['quantum computing', 'qiskit', 'experiments', 'reproducibility', 'tracking'],
+    license="Apache 2.0",
     classifiers=[
-        'License :: OSI Approved :: BSD License',
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: MacOS",
+        "Operating System :: POSIX :: Linux",
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.7',
+        "Topic :: Scientific/Engineering",
     ],
     install_requires=[
         'Click>=6',
-        'requests>=2.22.0'
+        'requests>=2.22.0',
+        'numpy>=1.20.0'
     ],
     python_requires='>=3.7',
     entry_points='''

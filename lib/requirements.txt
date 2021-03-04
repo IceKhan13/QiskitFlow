@@ -5,11 +5,13 @@ click==7.1.2
 idna==2.10
 importlib-metadata==2.0.0
 iniconfig==1.1.1
+numpy==1.20.1
 packaging==20.4
 pluggy==0.13.1
 py==1.9.0
 pyparsing==2.4.7
 pytest==6.1.1
+qiskitflow==0.0.0
 requests==2.24.0
 six==1.15.0
 tabulate==0.8.7
