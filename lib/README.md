@@ -157,6 +157,28 @@ Experiment information
 </p>
 </details>
 
+
+#### Share experiment run
+```shell script
+qiskitflow share <RUN_ID> --user=<USER> --password=<password> --host=<HOST> --port=<PORT>
+```
+
+Example for local backend server
+```shell script
+qiskitflow share 86b6e7ba32f04d34b842a91079482454 --user=<USER> --password=<password> --host=http://localhost --port=8000
+```
+
+<details><summary>experiment share screenshots</summary>
+<p>
+
+Experiment information
+![share](https://github.com/IceKhan13/QiskitFlow/blob/master/lib/docs/images/run_share.png?raw=true)
+
+</p>
+</details>
+
+
+
 ------
 
 ### Examples

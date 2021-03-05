@@ -1,8 +1,10 @@
 import click
+import os
 
 from qiskitflow.cli.runs.list import runs
 from qiskitflow.cli.runs.experiments import get_experiments
 from qiskitflow.cli.runs.detail import detail
+from qiskitflow.cli.runs.share import share_experiment_run
 
 
 @click.group(help="""
@@ -33,3 +35,26 @@ def run_detailed(run_id):
 @qiskitflow.command("experiments")
 def experiments():
     get_experiments()
+
+
+class HiddenPassword(object):
+    def __init__(self, password=''):
+        self.password = password
+
+    def __str__(self):
+        return '*' * len(self.password)
+
+
+@qiskitflow.command("share")
+@click.argument("run_id", type=str)
+@click.option("--user",
+              prompt=True,
+              default=lambda: os.environ.get('QISKITFLOW_USER', ''))
+@click.option('--password',
+              prompt=True,
+              default=lambda: HiddenPassword(os.environ.get('QISKITFLOW_PASSWORD', '')),
+              hide_input=True)
+@click.option("--host", default="http://localhost")
+@click.option("--port", default="8000")
+def share_run(run_id, user, password, host, port):
+    share_experiment_run(run_id, user, password, host, port)

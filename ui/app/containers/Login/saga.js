@@ -58,6 +58,6 @@ export function* logout() {
 
 export default function* loginSaga() {
   yield takeLatest(USER_LOGIN, getToken);
-  yield takeLatest(GET_PROFILE, getProfile);
+  // yield takeLatest(GET_PROFILE, getProfile);
   yield takeLatest(USER_LOGOUT, logout);
 }
