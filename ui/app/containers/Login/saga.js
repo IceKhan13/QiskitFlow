@@ -25,6 +25,7 @@ export function* getToken({ username, password }) {
     });
     const token = response.access;
     localStorage.setItem('token', token);
+    localStorage.setItem('username', username);
     // yield put(profileAction());
     yield put(
       loginSuccessAction({
@@ -42,10 +43,11 @@ export function* getProfile() {
     'https://run.mocky.io/v3/a8f96d06-98bd-4dcd-a489-7d6f3b869bfb';
 
   const token = localStorage.getItem('token');
+  const username = localStorage.getItem('username');
   if (token) {
     try {
       const response = yield call(request, profileUrl);
-      yield put(loginSuccessAction(response));
+      yield put(loginSuccessAction({ username, email: '' }));
     } catch (err) {
       yield put(loginErrorAction(err));
     }

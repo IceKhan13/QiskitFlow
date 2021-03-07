@@ -20,8 +20,10 @@ Platform for tracking, sharing and running quantum experiments in a clean and un
 * [CLI](#cli)
   * [Experiment runs list](#list-of-experiment-runs)
   * [Experiment run information](#experiment-run-information)
+  * [Share experiment](#share-experiment-run)
 * [Examples](#examples)
-* [UI Mocks](#mocks-of-upcoming-ui)
+* [Run server and UI on your machine](#run-local)
+* [UI](#ui)
 
 ### Flow
 
@@ -31,7 +33,7 @@ Flow of actions while using QiskitFlow is following:
 - Run your code as usual: QiskitFlow will write metadata of your experiment execution in local folder 
 - You can review experiments using [CLI interface](#cli)
 
-> We are tracking metrics, parameters, artifacts and measurements of experiments. 
+> We are tracking metrics, parameters, state vectors and counts of experiments. 
 > Artifacts, circuits, sourcecode and other useful things are on their way.
 
 > Note: qiskitflow creates `_experiments` folder in place of execution of code, where all serialized information is stored in json format, so it's easy to track it even in git 
@@ -157,6 +159,27 @@ Experiment information
 </p>
 </details>
 
+
+#### Share experiment run
+```shell script
+qiskitflow share <RUN_ID> --user=<USER> --password=<password> --host=<HOST> --port=<PORT>
+```
+
+Example for local backend server
+```shell script
+qiskitflow share 86b6e7ba32f04d34b842a91079482454 --user=<USER> --password=<password> --host=http://localhost --port=8000
+```
+
+<details><summary>experiment share screenshots</summary>
+<p>
+
+Experiment information
+![share](https://github.com/IceKhan13/QiskitFlow/blob/master/lib/docs/images/run_share.png?raw=true)
+
+</p>
+</details>
+
+
 ------
 
 ### Examples
@@ -164,9 +187,18 @@ Experiment information
 [Jupyter notebook with quantum teleportation example](https://github.com/IceKhan13/QiskitFlow/blob/master/docs/examples/example.ipynb)
 
 
-### Mocks of upcoming UI
+### Run local
 
-<details><summary>UI mocks</summary>
+0. Install `docker compose` 
+1. Run
+```shell script
+docker-compose up
+```
+
+
+### UI
+
+<details><summary>Screenshots</summary>
 <p>
 
 Experiment information

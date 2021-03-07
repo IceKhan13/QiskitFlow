@@ -65,7 +65,7 @@ function App({ user, loggedIn, logoutUser, getProfile }) {
     if (!loggedIn) getProfile();
   });
 
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const siderMenu = loggedIn ? (
     <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
@@ -111,7 +111,11 @@ function App({ user, loggedIn, logoutUser, getProfile }) {
       <Layout style={{ minHeight: '100vh' }}>
         {siderMenu}
         <Layout className="site-layout">
-          <Header className="site-layout-background" style={{ padding: 0 }} />
+          <Header className="site-layout-background" style={{ padding: 0 }}>
+            <Link to="/" style={{ padding: '0 24px', fontSize: 24 }}>
+              QiskitFlow
+            </Link>
+          </Header>
           <Content style={{ margin: '16px 16px' }}>
             <div
               className="site-layout-background"

@@ -1,7 +1,9 @@
 import time
 from django.contrib.auth.models import User
 
-from core.models import Experiment, Run, Metric, Count, CountEntry, Parameter
+from core.models import (Experiment, Run, Metric,
+                         Count, CountEntry, Parameter,
+                         StateVector, ComplexNumber)
 
 
 class RequestToModelAdapter:
@@ -14,8 +16,19 @@ class RequestToModelAdapter:
         experiment.save()
 
         run_id = request.get("run_id")
-        run = Run(run_id=run_id, experiment=experiment, timestamp=request.get("timestamp", int(time.time())))
+        run = Run(run_id=run_id,
+                  experiment=experiment,
+                  description=request.get("description", ""),
+                  timestamp=request.get("timestamp", int(time.time())))
         run.save()
+
+        for sv in request.get("state_vectors", []):
+            state_vector = StateVector(name=sv.get("name"), run=run)
+            state_vector.save()
+
+            for real, img in sv.get("vector", []):
+                complex_number = ComplexNumber(real=real, img=img, state_vector=state_vector)
+                complex_number.save()
 
         for m in request.get("metrics", []):
             metric = Metric(name=m.get("name"),

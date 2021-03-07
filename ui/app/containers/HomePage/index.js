@@ -63,13 +63,17 @@ export function HomePage({ dispatch, user, loggedIn, loading }) {
         </Col>
         <Col span={6}>
           <Card title="QiskitFlow info" style={{ margin: '20px 0' }}>
-            <b>Build</b>: 0.0.1-alpha
+            <b>Build</b>: 0.0.10-alpha
             <br />
-            <b>Email</b>: qiskitflow@gmail.com
+            <b>Github</b>:{' '}
+            <a href="https://github.com/IceKhan13/QiskitFlow" target="_blank">
+              https://github.com/IceKhan13/QiskitFlow
+            </a>
             <br />
-            <b>Github</b>: https://github.com/IceKhan13/QiskitFlow
-            <br />
-            <b>PyPi</b>: https://pypi.org/project/qiskitflow/
+            <b>PyPi</b>:{' '}
+            <a href="https://pypi.org/project/qiskitflow/" target="_black">
+              https://pypi.org/project/qiskitflow/
+            </a>
           </Card>
           {loginForm}
           <img
@@ -85,7 +89,7 @@ export function HomePage({ dispatch, user, loggedIn, loading }) {
               />
               <Step title="Testing" description="Testing is in progress" />
               <Step
-                title="Genera public release"
+                title="General public release"
                 description="Release for general public with open registration"
               />
               <Step

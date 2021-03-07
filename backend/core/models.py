@@ -34,8 +34,35 @@ class Run(models.Model):
                                    on_delete=models.CASCADE,
                                    related_name='runs')
 
+    description = models.TextField(default="")
+
     def __str__(self):
         return self.run_id
+
+
+class StateVector(models.Model):
+    """ Base class for logged state vector. """
+    name = models.CharField(max_length=255)
+
+    run = models.ForeignKey(Run,
+                            on_delete=models.CASCADE,
+                            related_name='state_vectors')
+
+    def __str__(self):
+        return self.name
+
+
+class ComplexNumber(models.Model):
+    """ General model for complex numbers. """
+    real = models.FloatField()
+    img = models.FloatField(default=0.0)
+
+    state_vector = models.ForeignKey(StateVector,
+                                     on_delete=models.CASCADE,
+                                     related_name='vector')
+
+    def __str__(self):
+        return "{} + j{}".format(self.real, self.img)
 
 
 class Metric(models.Model):

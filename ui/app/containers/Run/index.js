@@ -4,29 +4,20 @@
  *
  */
 
-import React, {memo, useEffect, useRef} from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
-import {
-  Row,
-  Col,
-  Table,
-  Divider,
-  Card,
-  Skeleton,
-  Typography,
-  Tree,
-} from 'antd';
+import { Row, Col, Table, Divider, Card, Typography, Tree, List, Switch } from 'antd';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import { InfoCircleOutlined, DownOutlined } from '@ant-design/icons';
+import { DownOutlined } from '@ant-design/icons';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import makeSelectRun from './selectors';
-import { getRunAction } from './actions';
+import { getRunAction, setPublic } from './actions';
 import reducer from './reducer';
 import saga from './saga';
 
@@ -45,7 +36,7 @@ const columns = [
   },
 ];
 
-export function Run({ run, match, getRun }) {
+export function Run({ run, match, getRun, setPublic }) {
   useInjectReducer({ key: 'run', reducer });
   useInjectSaga({ key: 'run', saga });
 
@@ -103,9 +94,7 @@ export function Run({ run, match, getRun }) {
     <p>No description provided...</p>
   );
 
-  const metrics = run.metrics.map((metric, i) => {
-    return { ...metric, key: i };
-  });
+  const metrics = run.metrics.map((metric, i) => ({ ...metric, key: i }));
 
   return (
     <div>
@@ -118,7 +107,17 @@ export function Run({ run, match, getRun }) {
         <Divider />
         <Row gutter={[16, 16]}>
           <Col span={12}>
-            <Card title="Information & parameters" extra={<InfoCircleOutlined />}>
+            <Card
+              title="Information & parameters"
+              extra={
+                <Switch
+                  checkedChildren="public"
+                  unCheckedChildren="private"
+                  checked={run.is_public}
+                  onClick={setPublic}
+                />
+              }
+            >
               <b>QiskitFlow version</b>: {run.version}
               <br />
               <br />
@@ -129,22 +128,34 @@ export function Run({ run, match, getRun }) {
               <br />
               <b>BibTeX</b>:
               <Paragraph copyable>
-                {`@software{QiskitFlow,
-                        author = {Admin},
-                        title = {Quantum experiment ${runId}},
-                        url = {http://localhost:3000/runs/${runId}},
-                        version = {0.0.0-alpha},
-                        date = {2020-10-08}
-                        }`}
+                {`...`}
               </Paragraph>
             </Card>
-            <br/>
+            <br />
             <Table
-                key="metrics_table"
-                dataSource={metrics}
-                columns={columns}
-                pagination={false}
+              key="metrics_table"
+              dataSource={metrics}
+              columns={columns}
+              pagination={false}
+            />
+            <br />
+            <Card title="State vectors">
+              <List
+                size="small"
+                dataSource={run.state_vectors}
+                renderItem={sv => {
+                  const vector = sv.vector
+                    .map(c => `${c.real}+j${c.img} `)
+                    .concat();
+
+                  return (
+                    <List.Item>
+                      <b>{sv.name}</b>: {vector}
+                    </List.Item>
+                  );
+                }}
               />
+            </Card>
           </Col>
           <Col span={12}>
             <Card
@@ -179,6 +190,7 @@ Run.propTypes = {
   // eslint-disable-next-line react/no-unused-prop-types
   dispatch: PropTypes.func.isRequired,
   getRun: PropTypes.func,
+  setPublic: PropTypes.func,
   run: PropTypes.object,
 };
 
@@ -190,6 +202,7 @@ function mapDispatchToProps(dispatch) {
   return {
     dispatch,
     getRun: runId => dispatch(getRunAction(runId)),
+    setPublic: flag => dispatch(setPublic(flag)),
   };
 }
 

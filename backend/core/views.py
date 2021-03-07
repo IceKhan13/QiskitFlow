@@ -7,7 +7,7 @@ from django.db.models import Q
 
 from utils.adapters import RequestToModelAdapter
 from .models import Experiment, Run
-from .permissions import UserExperimentPermission, UserRunPermission
+from .permissions import UserExperimentPermission, UserRunPermission, IsRunAuthorPermission
 from .serializers import ExperimentSerializer, RunSerializer
 
 
@@ -40,6 +40,24 @@ class RunViewSet(viewsets.ModelViewSet):
             print("Error: {}".format(e))
             return JsonResponse({
                 "message": "Something went wrong during run sharing =("
+            }, status=500)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsRunAuthorPermission])
+    def set_public(self, request, pk=None):
+        """ Flags run as publicly available run, """
+        run = self.get_object()
+        public_flag = request.data.get("public", False)
+        if isinstance(public_flag, bool):
+            run.is_public = public_flag
+            run.save()
+            return JsonResponse({
+                "message": "Run [{run_id}] has been updated "
+                           "successfully to {flag}".format(run_id=run.run_id,
+                                                           flag="public" if public_flag else "private")
+            })
+        else:
+            return JsonResponse({
+                "message": "Public flag should be boolean"
             }, status=500)
 
     @action(detail=False)
