@@ -128,13 +128,7 @@ export function Run({ run, match, getRun, setPublic }) {
               <br />
               <b>BibTeX</b>:
               <Paragraph copyable>
-                {`@software{QiskitFlow,
-                        author = {Admin},
-                        title = {Quantum experiment ${runId}},
-                        url = {http://localhost:3000/runs/${runId}},
-                        version = {0.0.0-alpha},
-                        date = {2020-10-08}
-                        }`}
+                {`...`}
               </Paragraph>
             </Card>
             <br />

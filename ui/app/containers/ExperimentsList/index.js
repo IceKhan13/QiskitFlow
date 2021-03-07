@@ -4,14 +4,14 @@
  *
  */
 
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
-import { Table, Pagination, Card } from 'antd';
+import { Table, Card } from 'antd';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
@@ -103,8 +103,10 @@ export function ExperimentsList({
   useInjectReducer({ key, reducer });
   useInjectSaga({ key, saga });
 
+  const didMount = useRef(true);
   useEffect(() => {
-    if (results.length === 0) getExperiments(1);
+    if (didMount.current) getExperiments(1);
+    didMount.current = false;
   });
 
   const columns = [

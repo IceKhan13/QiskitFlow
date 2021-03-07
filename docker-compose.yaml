@@ -1,0 +1,37 @@
+version: "3.6"
+services:
+
+  db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: qiskitflow
+    ports:
+    - 5432:5432
+
+  server:
+    build: 
+      context: ./backend/
+      dockerfile: _Dockerfile
+    command: sh -c "python manage.py migrate && python manage.py initadmin && gunicorn qiskitflow_backend.wsgi:application --bind 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    environment:
+      DEBUG: 'False'
+      ALLOWED_HOSTS: "*,"
+      DB_NAME: qiskitflow
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      STATIC_URL: "/static/"
+      DJANGO_ADMINS: "admin,admin,nonexistingemail@someserver.ru"
+    depends_on:
+      - db
+
+  ui:
+    build: ./ui/
+    ports:
+      - "3000:80"
