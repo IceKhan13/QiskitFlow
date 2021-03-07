@@ -195,6 +195,8 @@ Experiment information
 docker-compose up
 ```
 
+Note: username and password for local server is `admin`
+
 
 ### UI
 

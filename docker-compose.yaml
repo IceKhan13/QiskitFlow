@@ -2,6 +2,7 @@ version: "3.6"
 services:
 
   db:
+    container_name: qiskitflow-db
     image: postgres:13-alpine
     restart: always
     environment:
@@ -12,9 +13,11 @@ services:
     - 5432:5432
 
   server:
-    build: 
-      context: ./backend/
-      dockerfile: _Dockerfile
+    container_name: qiskitflow-server
+    image: icekhan/qiskitflow-backend:latest
+    # build: 
+    #   context: ./backend/
+    #   dockerfile: _Dockerfile
     command: sh -c "python manage.py migrate && python manage.py initadmin && gunicorn qiskitflow_backend.wsgi:application --bind 0.0.0.0:8000"
     ports:
       - "8000:8000"
@@ -32,6 +35,8 @@ services:
       - db
 
   ui:
-    build: ./ui/
+    container_name: qiskitflow-ui
+    image: icekhan/qiskitflow-ui:latest
+    #build: ./ui/
     ports:
       - "3000:80"
