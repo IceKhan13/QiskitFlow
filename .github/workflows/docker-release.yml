@@ -28,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./backend/
-          file: _Dockerfile
+          file: ./backend/_Dockerfile
           push: true
           tags: icekhan/qiskitflow-backend:latest
           #,icekhan/qiskitflow-backend:$release_version
