@@ -22,6 +22,7 @@ Platform for tracking, sharing and running quantum experiments in a clean and un
   * [Experiment run information](#experiment-run-information)
   * [Share experiment](#share-experiment-run)
 * [Examples](#examples)
+* [Run server and UI on your machine](#run-local)
 * [UI](#ui)
 
 ### Flow
@@ -186,9 +187,18 @@ Experiment information
 [Jupyter notebook with quantum teleportation example](https://github.com/IceKhan13/QiskitFlow/blob/master/docs/examples/example.ipynb)
 
 
+### Run local
+
+0. Install `docker compose` 
+1. Run
+```shell script
+docker-compose up
+```
+
+
 ### UI
 
-<details><summary>UI</summary>
+<details><summary>Screenshots</summary>
 <p>
 
 Experiment information
