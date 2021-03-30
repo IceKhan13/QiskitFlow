@@ -6,7 +6,7 @@ from qiskitflow_backend import settings
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        for line in settings.ADMINS:
+        for line in settings.ON_START_ADMINS:
             username, password, email = line.split(",")
             if User.objects.filter(username=username).exists():
                 print("Admin user {} already exists".format(username))

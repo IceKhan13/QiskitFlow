@@ -15,10 +15,7 @@ services:
   server:
     container_name: qiskitflow-server
     image: icekhan/qiskitflow-backend:latest
-    # build: 
-    #   context: ./backend/
-    #   dockerfile: _Dockerfile
-    command: sh -c "python manage.py migrate && python manage.py initadmin && gunicorn qiskitflow_backend.wsgi:application --bind 0.0.0.0:8000"
+    command: sh -c "until pg_isready --username=postgres --host=db; do sleep 1; done; python manage.py migrate && python manage.py initadmin && gunicorn qiskitflow_backend.wsgi:application --bind 0.0.0.0:8000"
     ports:
       - "8000:8000"
     environment:
@@ -37,6 +34,5 @@ services:
   ui:
     container_name: qiskitflow-ui
     image: icekhan/qiskitflow-ui:latest
-    #build: ./ui/
     ports:
       - "3000:80"

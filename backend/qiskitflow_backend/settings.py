@@ -166,4 +166,4 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(hours=3)
 }
 
-ADMINS = os.environ.get("DJANGO_ADMINS", "").split(";")
+ON_START_ADMINS = os.environ.get("DJANGO_ADMINS", "").split(";")
