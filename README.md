@@ -8,24 +8,21 @@ Platform for tracking, sharing and running quantum experiments in a clean and un
 > Alpha release is in the works. 
 > Files from hackathon project are located in [hackathon folder](./hackathon)
 
-### General overview
-
-![flow](https://raw.githubusercontent.com/IceKhan13/QiskitFlow/master/docs/images/flow.png)
-
-
 ### Hot to run
 * [Overview / Flow](#flow)
-* [Installation](#installation)
+* [Installation and server running](#installation)
 * [Code annotation](#code-annotation)
 * [CLI](#cli)
   * [Experiment runs list](#list-of-experiment-runs)
   * [Experiment run information](#experiment-run-information)
   * [Share experiment](#share-experiment-run)
 * [Examples](#examples)
-* [Run server and UI on your machine](#run-local)
 * [UI](#ui)
 
+
 ### Flow
+
+![flow](https://raw.githubusercontent.com/IceKhan13/QiskitFlow/master/docs/images/flow.png)
 
 Flow of actions while using QiskitFlow is following:
 - [Install](#installation) QiskitFlow if not installed yet
@@ -41,9 +38,23 @@ Flow of actions while using QiskitFlow is following:
 
 ### Installation
 
+In order to install qiskitflow locally you need to follow 2 step process:
+- install python library for code annopatation and cli
+- run docker containers for backend server, ui and database
+
+To install qiskitflow library and CLI simply run
 ```shell script
 pip install qiskitflow
 ```
+
+In order to run containers with required services we suggest to use docker-compose. But by no means we restrict you to deploy qiskitflow to any container aware environment. At the end of the day all required services are just docker images.
+1. Copy [./docker-compose.yaml](docker-compose.yaml file) to your machine
+2. Run `docker-compose up` in a folder where you saved compose file. In a few moments you should see logs from server, ui and database. 
+
+
+> NOTE: in order to share experiments you need to have backend server up and running.
+
+> NOTE: username and password for local server is `admin`
 
 
 ### Code annotation
@@ -185,17 +196,6 @@ Experiment information
 ### Examples
 
 [Jupyter notebook with quantum teleportation example](https://github.com/IceKhan13/QiskitFlow/blob/master/docs/examples/example.ipynb)
-
-
-### Run local
-
-0. Install `docker compose` 
-1. Run
-```shell script
-docker-compose up
-```
-
-Note: username and password for local server is `admin`
 
 
 ### UI
