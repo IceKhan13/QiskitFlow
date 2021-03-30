@@ -48,7 +48,7 @@ pip install qiskitflow
 ```
 
 In order to run containers with required services we suggest to use docker-compose. But by no means we restrict you to deploy qiskitflow to any container aware environment. At the end of the day all required services are just docker images.
-1. Copy [./docker-compose.yaml](docker-compose.yaml file) to your machine
+1. Copy [docker-compose.yaml file ](./docker-compose.yaml) to your machine
 2. Run `docker-compose up` in a folder where you saved compose file. In a few moments you should see logs from server, ui and database. 
 
 
