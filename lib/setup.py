@@ -30,7 +30,8 @@ setuptools.setup(
     install_requires=[
         'Click>=6',
         'requests>=2.22.0',
-        'numpy>=1.0.0'
+        'numpy>=1.0.0',
+        'tabulate==0.8.7'
     ],
     python_requires='>=3.6',
     entry_points='''
